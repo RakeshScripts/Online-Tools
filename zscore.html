@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Z-score Calculator. Calculate the z-score for a data point given the mean and standard deviation.">
+    <meta name="keywords" content="z-score calculator, z-score, statistics calculator, free tool, online tool">
+    <meta name="author" content="Your Name">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Z-score Calculator - Free Online Tool">
+    <meta property="og:description" content="Calculate the z-score for a data point given the mean and standard deviation instantly with our free online tool.">
+    <meta property="og:type" content="website">
+    <title>Z-score Calculator - Free Online Tool</title>
+    <style>
+        :root {
+            --primary-color: #4a2c6e;
+            --secondary-color: #ff6b6b;
+            --success-color: #00b894;
+            --background: #f8e1e9;
+            --text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 0 20px; }
+        h1 {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            text-shadow: var(--text-shadow);
+            letter-spacing: 1px;
+        }
+        p#description {
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .calculator { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .input-section { margin: 1.5rem 0; text-align: center; }
+        .input-fields {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .calculate-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .calculate-btn:hover {
+            background: #ff8787;
+            transform: translateY(-2px);
+        }
+        .result { margin-top: 2rem; text-align: center; }
+        .result h3 { font-size: 1.5em; color: var(--primary-color); margin-bottom: 1rem; }
+        .result p {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .result .z-score { color: var(--success-color); }
+        .result .interpretation { font-style: italic; color: #555; }
+        .copy-btn {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #009e7f;
+            transform: translateY(-2px);
+        }
+        .error { color: #c0392b; font-weight: 500; margin: 1rem 0; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            .calculator { padding: 1.5rem; }
+            .input-fields { flex-direction: column; gap: 10px; }
+            .calculate-btn, .copy-btn { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            .container { padding: 10px; }
+            p#description { font-size: 1em; }
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Z-score Calculator</h1>
+            <p id="description">Calculate the z-score for a data point given the mean and standard deviation</p>
+        </header>
+        <main class="calculator">
+            <div class="input-section">
+                <div class="input-fields">
+                    <div class="input-group">
+                        <label for="dataPoint">Data Point (x)</label>
+                        <input type="number" id="dataPoint" step="any" placeholder="e.g., 75" aria-label="Data point (x)">
+                    </div>
+                    <div class="input-group">
+                        <label for="mean">Mean (μ)</label>
+                        <input type="number" id="mean" step="any" placeholder="e.g., 70" aria-label="Mean (μ)">
+                    </div>
+                    <div class="input-group">
+                        <label for="stdDev">Standard Deviation (σ)</label>
+                        <input type="number" id="stdDev" step="any" placeholder="e.g., 5" aria-label="Standard Deviation (σ)">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculateZScore()">Calculate Z-score</button>
+            </div>
+            <div class="result" id="result">
+                <h3>Result</h3>
+                <p id="errorMessage" class="error"></p>
+                <p id="zScoreResult"></p>
+                <p id="interpretationResult" class="interpretation"></p>
+                <button class="copy-btn" onclick="copyToClipboard()">Copy Result</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function calculateZScore() {
+            const dataPointInput = document.getElementById('dataPoint').value.trim();
+            const meanInput = document.getElementById('mean').value.trim();
+            const stdDevInput = document.getElementById('stdDev').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const zScoreResult = document.getElementById('zScoreResult');
+            const interpretationResult = document.getElementById('interpretationResult');
+            const copyBtn = document.querySelector('.copy-btn');
+
+            // Clear previous results
+            errorMessage.textContent = '';
+            zScoreResult.textContent = '';
+            interpretationResult.textContent = '';
+            copyBtn.style.display = 'none';
+
+            // Parse inputs
+            const x = parseFloat(dataPointInput);
+            const mean = parseFloat(meanInput);
+            const stdDev = parseFloat(stdDevInput);
+
+            // Validate inputs
+            if (isNaN(x) || isNaN(mean) || isNaN(stdDev)) {
+                errorMessage.textContent = 'Please enter valid numbers for all fields.';
+                return;
+            }
+
+            if (stdDev <= 0) {
+                errorMessage.textContent = 'Standard deviation must be greater than 0.';
+                return;
+            }
+
+            // Calculate z-score
+            const zScore = (x - mean) / stdDev;
+
+            // Interpret the z-score
+            let interpretation = '';
+            const absZScore = Math.abs(zScore);
+            if (absZScore > 3) {
+                interpretation = `The data point is ${absZScore.toFixed(2)} standard deviations ${zScore > 0 ? 'above' : 'below'} the mean (extreme outlier).`;
+            } else if (absZScore > 2) {
+                interpretation = `The data point is ${absZScore.toFixed(2)} standard deviations ${zScore > 0 ? 'above' : 'below'} the mean (potential outlier).`;
+            } else if (absZScore > 1) {
+                interpretation = `The data point is ${absZScore.toFixed(2)} standard deviations ${zScore > 0 ? 'above' : 'below'} the mean (somewhat unusual).`;
+            } else {
+                interpretation = `The data point is ${absZScore.toFixed(2)} standard deviations ${zScore > 0 ? 'above' : 'below'} the mean (fairly typical).`;
+            }
+
+            // Display results
+            zScoreResult.innerHTML = `Z-score: <span class="z-score">${zScore.toFixed(4)}</span>`;
+            interpretationResult.textContent = interpretation;
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function copyToClipboard() {
+            const zScoreResult = document.getElementById('zScoreResult').textContent;
+            const interpretationResult = document.getElementById('interpretationResult').textContent;
+            const text = `${zScoreResult}\n${interpretationResult}`;
+
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('Result copied to clipboard!');
+                })
+                .catch(err => {
+                    alert('Failed to copy: ' + err.message);
+                });
+        }
+    </script>
+</body>
+</html>

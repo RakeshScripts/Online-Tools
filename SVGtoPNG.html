@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online image converter tool. Convert SVG to PNG or PNG to SVG quickly with high quality.">
+    <meta name="keywords" content="svg to png, png to svg, image converter online, format converter, free image conversion">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="SVG/PNG Converter - Free Online Tool">
+    <meta property="og:description" content="Convert between SVG and PNG formats instantly with our free online tool.">
+    <meta property="og:type" content="website">
+    <title>SVG/PNG Converter - Free Online Tool</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --background: #ecf0f1;
+            --text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 0 20px; }
+        h1 {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            text-shadow: var(--text-shadow);
+            letter-spacing: 1px;
+        }
+        .swap-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #formatText {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--secondary-color);
+            letter-spacing: 0.5px;
+            padding: 5px 15px;
+            border-radius: 15px;
+            background: rgba(52, 152, 219, 0.1);
+        }
+        .swap-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--text-shadow);
+        }
+        .swap-btn:hover { background: #c0392b; transform: scale(1.05); }
+        p#description {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .converter { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .file-input { margin: 1.5rem 0; text-align: center; }
+        input[type="file"] { padding: 0.5rem; width: 100%; max-width: 400px; margin: 0 auto; display: block; font-size: 1em; }
+        .convert-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .convert-btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .status { text-align: center; margin: 1rem 0; display: none; font-weight: 500; color: var(--secondary-color); }
+        .result { margin-top: 2rem; text-align: center; }
+        .result p { font-size: 1.2em; font-weight: 500; color: var(--success-color); margin-bottom: 1rem; }
+        .result img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; margin: 1rem 0; }
+        .download-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--success-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover { background: #219653; transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            .converter { padding: 1.5rem; }
+            .convert-btn { width: 100%; }
+            .swap-container { flex-direction: column; padding: 15px; }
+            #formatText { font-size: 1.2em; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            .container { padding: 10px; }
+            p#description { font-size: 1em; }
+            .swap-btn { width: 100%; }
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="title">SVG to PNG Converter</h1>
+            <div class="swap-container">
+                <span id="formatText">SVG to PNG</span>
+                <button class="swap-btn" onclick="swapConverter()">Swap</button>
+            </div>
+            <p id="description">Transform your SVG images to PNG format instantly</p>
+        </header>
+        <main class="converter">
+            <div class="file-input">
+                <input type="file" id="imageInput" accept=".svg" aria-label="Select image file">
+                <button class="convert-btn" onclick="convertImage()">Convert Now</button>
+            </div>
+            <div class="status" id="status">Converting...</div>
+            <div class="result" id="result"></div>
+        </main>
+    </div>
+    <script>
+        let isSvgToPng = true;
+
+        function swapConverter() {
+            isSvgToPng = !isSvgToPng;
+            const title = document.getElementById('title');
+            const formatText = document.getElementById('formatText');
+            const description = document.getElementById('description');
+            const input = document.getElementById('imageInput');
+
+            if (isSvgToPng) {
+                title.textContent = 'SVG to PNG Converter';
+                formatText.textContent = 'SVG to PNG';
+                description.textContent = 'Transform your SVG images to PNG format instantly';
+                input.accept = '.svg';
+            } else {
+                title.textContent = 'PNG to SVG Converter';
+                formatText.textContent = 'PNG to SVG';
+                description.textContent = 'Transform your PNG images to SVG format instantly';
+                input.accept = '.png';
+            }
+            document.getElementById('result').innerHTML = '';
+            input.value = '';
+        }
+
+        async function convertImage() {
+            const input = document.getElementById('imageInput');
+            const status = document.getElementById('status');
+            const result = document.getElementById('result');
+
+            if (!input.files[0]) {
+                alert(`Please select a ${isSvgToPng ? 'SVG' : 'PNG'} file first!`);
+                return;
+            }
+
+            status.style.display = 'block';
+            result.innerHTML = '';
+
+            try {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    if (isSvgToPng) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            const outputData = canvas.toDataURL('image/png', 1.0);
+
+                            result.innerHTML = `
+                                <p>Conversion successful!</p>
+                                <img src="${outputData}" alt="Converted PNG image">
+                                <a href="${outputData}" download="converted-image.png" class="download-btn">Download PNG</a>
+                            `;
+                            status.style.display = 'none';
+                        };
+                        img.src = e.target.result;
+                    } else {
+                        // PNG to SVG is complex and requires vectorization
+                        // This is a simplified placeholder
+                        result.innerHTML = `
+                            <p>PNG to SVG conversion requires advanced vectorization.</p>
+                            <p>Please use a dedicated tool for accurate results.</p>
+                        `;
+                        status.style.display = 'none';
+                    }
+                };
+
+                reader.onerror = function() {
+                    throw new Error('Error loading file');
+                };
+
+                reader.readAsDataURL(file);
+            } catch (error) {
+                status.textContent = 'Error during conversion. Please try again.';
+                status.style.color = '#c0392b';
+                setTimeout(() => {
+                    status.style.display = 'none';
+                    status.style.color = 'inherit';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

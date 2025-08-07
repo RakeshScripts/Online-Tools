@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Descriptive Statistics Calculator. Calculate mean, median, mode, variance, standard deviation, and more.">
+    <meta name="keywords" content="descriptive statistics, statistics calculator, mean, median, mode, variance, standard deviation, free tool, online tool">
+    <meta name="author" content="Your Name">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Descriptive Statistics Calculator - Free Online Tool">
+    <meta property="og:description" content="Calculate descriptive statistics like mean, median, mode, variance, and standard deviation instantly with our free online tool.">
+    <meta property="og:type" content="website">
+    <title>Descriptive Statistics Calculator - Free Online Tool</title>
+    <style>
+        :root {
+            --primary-color: #4a2c6e;
+            --secondary-color: #ff6b6b;
+            --success-color: #00b894;
+            --background: #f8e1e9;
+            --text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 0 20px; }
+        h1 {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            text-shadow: var(--text-shadow);
+            letter-spacing: 1px;
+        }
+        p#description {
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .calculator { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .input-section { margin: 1.5rem 0; text-align: center; }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            padding: 0.5rem;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .calculate-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .calculate-btn:hover {
+            background: #ff8787;
+            transform: translateY(-2px);
+        }
+        .result { margin-top: 2rem; text-align: center; }
+        .result h3 { font-size: 1.5em; color: var(--primary-color); margin-bottom: 1rem; }
+        .result table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .result th, .result td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .result th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        .result td { font-family: 'Courier New', Courier, monospace; }
+        .copy-btn {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #009e7f;
+            transform: translateY(-2px);
+        }
+        .error { color: #c0392b; font-weight: 500; margin: 1rem 0; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            .calculator { padding: 1.5rem; }
+            .calculate-btn, .copy-btn { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            .container { padding: 10px; }
+            p#description { font-size: 1em; }
+            .result table { font-size: 0.9em; }
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Descriptive Statistics Calculator</h1>
+            <p id="description">Calculate mean, median, mode, variance, standard deviation, and more from your dataset</p>
+        </header>
+        <main class="calculator">
+            <div class="input-section">
+                <textarea id="inputData" rows="5" placeholder="Enter numbers separated by commas or spaces (e.g., 1, 2, 3 or 1 2 3)" aria-label="Input dataset for statistics calculation"></textarea>
+                <button class="calculate-btn" onclick="calculateStats()">Calculate Statistics</button>
+            </div>
+            <div class="result" id="result">
+                <h3>Results</h3>
+                <table id="statsTable"></table>
+                <button class="copy-btn" onclick="copyToClipboard()">Copy Results</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function calculateStats() {
+            const inputData = document.getElementById('inputData').value.trim();
+            const statsTable = document.getElementById('statsTable');
+            const copyBtn = document.querySelector('.copy-btn');
+            const resultDiv = document.getElementById('result');
+
+            // Clear previous results
+            statsTable.innerHTML = '';
+            copyBtn.style.display = 'none';
+
+            // Validate and parse input
+            const numbers = inputData
+                .replace(/,/g, ' ') // Replace commas with spaces
+                .split(/\s+/) // Split by any whitespace
+                .filter(val => val) // Remove empty strings
+                .map(val => parseFloat(val)) // Convert to numbers
+                .filter(val => !isNaN(val)); // Remove non-numbers
+
+            if (numbers.length === 0) {
+                statsTable.innerHTML = '<tr><td colspan="2" class="error">Please enter a valid dataset (numbers only).</td></tr>';
+                return;
+            }
+
+            // Sort numbers for median and quartiles
+            const sortedNumbers = [...numbers].sort((a, b) => a - b);
+
+            // Calculate statistics
+            const n = numbers.length;
+
+            // Mean
+            const mean = numbers.reduce((sum, val) => sum + val, 0) / n;
+
+            // Median
+            const median = n % 2 === 0
+                ? (sortedNumbers[n / 2 - 1] + sortedNumbers[n / 2]) / 2
+                : sortedNumbers[Math.floor(n / 2)];
+
+            // Mode
+            const frequency = {};
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+            const maxFreq = Math.max(...Object.values(frequency));
+            const mode = Object.keys(frequency)
+                .filter(key => frequency[key] === maxFreq)
+                .map(Number)
+                .join(', ');
+
+            // Range
+            const min = Math.min(...numbers);
+            const max = Math.max(...numbers);
+            const range = max - min;
+
+            // Variance (Population and Sample)
+            const variancePop = numbers.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / n;
+            const varianceSample = n > 1 ? numbers.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (n - 1) : 0;
+
+            // Standard Deviation (Population and Sample)
+            const stdDevPop = Math.sqrt(variancePop);
+            const stdDevSample = Math.sqrt(varianceSample);
+
+            // Quartiles
+            const q1 = n % 2 === 0
+                ? (sortedNumbers[Math.floor(n / 4)] + sortedNumbers[Math.floor(n / 4) - 1]) / 2
+                : sortedNumbers[Math.floor(n / 4)];
+            const q2 = median;
+            const q3 = n % 2 === 0
+                ? (sortedNumbers[Math.floor(3 * n / 4)] + sortedNumbers[Math.floor(3 * n / 4) - 1]) / 2
+                : sortedNumbers[Math.floor(3 * n / 4)];
+            const iqr = q3 - q1;
+
+            // Display results in a table
+            const stats = [
+                { label: 'Count (n)', value: n },
+                { label: 'Mean', value: mean.toFixed(2) },
+                { label: 'Median', value: median.toFixed(2) },
+                { label: 'Mode', value: mode },
+                { label: 'Minimum', value: min.toFixed(2) },
+                { label: 'Maximum', value: max.toFixed(2) },
+                { label: 'Range', value: range.toFixed(2) },
+                { label: 'Variance (Population)', value: variancePop.toFixed(2) },
+                { label: 'Variance (Sample)', value: varianceSample.toFixed(2) },
+                { label: 'Standard Deviation (Population)', value: stdDevPop.toFixed(2) },
+                { label: 'Standard Deviation (Sample)', value: stdDevSample.toFixed(2) },
+                { label: 'Q1 (First Quartile)', value: q1.toFixed(2) },
+                { label: 'Q2 (Second Quartile)', value: q2.toFixed(2) },
+                { label: 'Q3 (Third Quartile)', value: q3.toFixed(2) },
+                { label: 'Interquartile Range (IQR)', value: iqr.toFixed(2) }
+            ];
+
+            statsTable.innerHTML = stats.map(stat => `
+                <tr>
+                    <th>${stat.label}</th>
+                    <td>${stat.value}</td>
+                </tr>
+            `).join('');
+
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function copyToClipboard() {
+            const statsTable = document.getElementById('statsTable');
+            const rows = Array.from(statsTable.querySelectorAll('tr'));
+            const text = rows.map(row => {
+                const cells = row.querySelectorAll('th, td');
+                return `${cells[0].textContent}: ${cells[1].textContent}`;
+            }).join('\n');
+
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('Results copied to clipboard!');
+                })
+                .catch(err => {
+                    alert('Failed to copy: ' + err.message);
+                });
+        }
+    </script>
+</body>
+</html>

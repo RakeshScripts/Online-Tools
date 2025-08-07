@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Correlation Coefficient Calculator. Calculate Pearson's correlation coefficient between two datasets.">
+    <meta name="keywords" content="correlation coefficient, pearson correlation, statistics calculator, free tool, online tool">
+    <meta name="author" content="Your Name">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Correlation Coefficient Calculator - Free Online Tool">
+    <meta property="og:description" content="Calculate Pearson's correlation coefficient between two datasets instantly with our free online tool.">
+    <meta property="og:type" content="website">
+    <title>Correlation Coefficient Calculator - Free Online Tool</title>
+    <style>
+        :root {
+            --primary-color: #4a2c6e;
+            --secondary-color: #ff6b6b;
+            --success-color: #00b894;
+            --background: #f8e1e9;
+            --text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 0 20px; }
+        h1 {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            text-shadow: var(--text-shadow);
+            letter-spacing: 1px;
+        }
+        p#description {
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .calculator { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .input-section { margin: 1.5rem 0; text-align: center; }
+        .dataset-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dataset {
+            flex: 1;
+            min-width: 250px;
+        }
+        .dataset label {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .calculate-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .calculate-btn:hover {
+            background: #ff8787;
+            transform: translateY(-2px);
+        }
+        .result { margin-top: 2rem; text-align: center; }
+        .result h3 { font-size: 1.5em; color: var(--primary-color); margin-bottom: 1rem; }
+        .result p {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .result .coefficient { color: var(--success-color); }
+        .result .interpretation { font-style: italic; color: #555; }
+        .copy-btn {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #009e7f;
+            transform: translateY(-2px);
+        }
+        .error { color: #c0392b; font-weight: 500; margin: 1rem 0; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            .calculator { padding: 1.5rem; }
+            .dataset-inputs { flex-direction: column; gap: 10px; }
+            .calculate-btn, .copy-btn { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            .container { padding: 10px; }
+            p#description { font-size: 1em; }
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Correlation Coefficient Calculator</h1>
+            <p id="description">Calculate Pearson's correlation coefficient between two datasets</p>
+        </header>
+        <main class="calculator">
+            <div class="input-section">
+                <div class="dataset-inputs">
+                    <div class="dataset">
+                        <label for="datasetX">Dataset X</label>
+                        <textarea id="datasetX" rows="5" placeholder="Enter numbers (e.g., 1, 2, 3 or 1 2 3)" aria-label="Input dataset X"></textarea>
+                    </div>
+                    <div class="dataset">
+                        <label for="datasetY">Dataset Y</label>
+                        <textarea id="datasetY" rows="5" placeholder="Enter numbers (e.g., 4, 5, 6 or 4 5 6)" aria-label="Input dataset Y"></textarea>
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculateCorrelation()">Calculate Correlation</button>
+            </div>
+            <div class="result" id="result">
+                <h3>Result</h3>
+                <p id="errorMessage" class="error"></p>
+                <p id="coefficientResult"></p>
+                <p id="interpretationResult" class="interpretation"></p>
+                <button class="copy-btn" onclick="copyToClipboard()">Copy Result</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function calculateCorrelation() {
+            const datasetXInput = document.getElementById('datasetX').value.trim();
+            const datasetYInput = document.getElementById('datasetY').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const coefficientResult = document.getElementById('coefficientResult');
+            const interpretationResult = document.getElementById('interpretationResult');
+            const copyBtn = document.querySelector('.copy-btn');
+
+            // Clear previous results
+            errorMessage.textContent = '';
+            coefficientResult.textContent = '';
+            interpretationResult.textContent = '';
+            copyBtn.style.display = 'none';
+
+            // Parse datasets
+            const datasetX = datasetXInput
+                .replace(/,/g, ' ')
+                .split(/\s+/)
+                .filter(val => val)
+                .map(val => parseFloat(val))
+                .filter(val => !isNaN(val));
+
+            const datasetY = datasetYInput
+                .replace(/,/g, ' ')
+                .split(/\s+/)
+                .filter(val => val)
+                .map(val => parseFloat(val))
+                .filter(val => !isNaN(val));
+
+            // Validate input
+            if (datasetX.length === 0 || datasetY.length === 0) {
+                errorMessage.textContent = 'Please enter valid numbers in both datasets.';
+                return;
+            }
+
+            if (datasetX.length !== datasetY.length) {
+                errorMessage.textContent = 'Datasets must have the same number of values.';
+                return;
+            }
+
+            if (datasetX.length < 2) {
+                errorMessage.textContent = 'Each dataset must have at least 2 values to calculate correlation.';
+                return;
+            }
+
+            // Calculate means
+            const meanX = datasetX.reduce((sum, val) => sum + val, 0) / datasetX.length;
+            const meanY = datasetY.reduce((sum, val) => sum + val, 0) / datasetY.length;
+
+            // Calculate Pearson's correlation coefficient
+            let numerator = 0;
+            let denominatorX = 0;
+            let denominatorY = 0;
+
+            for (let i = 0; i < datasetX.length; i++) {
+                const xDiff = datasetX[i] - meanX;
+                const yDiff = datasetY[i] - meanY;
+                numerator += xDiff * yDiff;
+                denominatorX += xDiff * xDiff;
+                denominatorY += yDiff * yDiff;
+            }
+
+            const denominator = Math.sqrt(denominatorX * denominatorY);
+
+            if (denominator === 0) {
+                errorMessage.textContent = 'Correlation cannot be calculated (one dataset has no variation).';
+                return;
+            }
+
+            const correlation = numerator / denominator;
+
+            // Interpret the correlation
+            let interpretation = '';
+            const absCorrelation = Math.abs(correlation);
+            if (absCorrelation >= 0.9) {
+                interpretation = 'Very strong ' + (correlation > 0 ? 'positive' : 'negative') + ' correlation';
+            } else if (absCorrelation >= 0.7) {
+                interpretation = 'Strong ' + (correlation > 0 ? 'positive' : 'negative') + ' correlation';
+            } else if (absCorrelation >= 0.5) {
+                interpretation = 'Moderate ' + (correlation > 0 ? 'positive' : 'negative') + ' correlation';
+            } else if (absCorrelation >= 0.3) {
+                interpretation = 'Weak ' + (correlation > 0 ? 'positive' : 'negative') + ' correlation';
+            } else {
+                interpretation = 'Little to no correlation';
+            }
+
+            // Display results
+            coefficientResult.innerHTML = `Correlation Coefficient (r): <span class="coefficient">${correlation.toFixed(4)}</span>`;
+            interpretationResult.textContent = `Interpretation: ${interpretation}`;
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function copyToClipboard() {
+            const coefficientResult = document.getElementById('coefficientResult').textContent;
+            const interpretationResult = document.getElementById('interpretationResult').textContent;
+            const text = `${coefficientResult}\n${interpretationResult}`;
+
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('Result copied to clipboard!');
+                })
+                .catch(err => {
+                    alert('Failed to copy: ' + err.message);
+                });
+        }
+    </script>
+</body>
+</html>
