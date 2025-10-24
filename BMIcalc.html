@@ -19,6 +19,14 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            animation: gradientShift 10s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .container {
@@ -28,23 +36,71 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            animation: containerSlideIn 0.8s ease-out;
+        }
+        
+        @keyframes containerSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         header {
             background: linear-gradient(to right, #4b6cb7, #182848);
             color: white;
-            padding: 25px;
+            padding: 25px 20px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         h1 {
-            font-size: 2.2rem;
+            font-size: clamp(1.8rem, 4vw, 2.2rem);
             margin-bottom: 10px;
+            animation: textPop 0.8s ease-out 0.3s both;
+        }
+        
+        @keyframes textPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .subtitle {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             opacity: 0.9;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 0.9; }
         }
         
         .content {
@@ -54,20 +110,62 @@
         
         .calculator-section {
             flex: 1;
-            min-width: 350px;
-            padding: 30px;
+            min-width: 300px;
+            padding: clamp(20px, 4vw, 30px);
+            animation: slideInLeft 0.8s ease-out 0.2s both;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .result-section {
             flex: 1;
-            min-width: 350px;
-            padding: 30px;
+            min-width: 300px;
+            padding: clamp(20px, 4vw, 30px);
             background-color: #f9f9f9;
             border-left: 1px solid #eee;
+            animation: slideInRight 0.8s ease-out 0.4s both;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .input-group {
             margin-bottom: 20px;
+            animation: inputAppear 0.6s ease-out both;
+        }
+        
+        .input-group:nth-child(1) { animation-delay: 0.6s; }
+        .input-group:nth-child(2) { animation-delay: 0.7s; }
+        .input-group:nth-child(3) { animation-delay: 0.8s; }
+        .input-group:nth-child(4) { animation-delay: 0.9s; }
+        .input-group:nth-child(5) { animation-delay: 1.0s; }
+        
+        @keyframes inputAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         label {
@@ -75,6 +173,7 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
         
         input, select {
@@ -82,13 +181,15 @@
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
-            transition: border 0.3s;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: all 0.3s;
         }
         
         input:focus, select:focus {
             border-color: #4b6cb7;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+            transform: translateY(-2px);
         }
         
         .units {
@@ -105,12 +206,18 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         }
         
         .unit-btn.active {
             background-color: #4b6cb7;
             color: white;
             border-color: #4b6cb7;
+        }
+        
+        .unit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         button {
@@ -120,45 +227,147 @@
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
         }
         
         .bmi-result {
             text-align: center;
             margin: 20px 0;
+            animation: resultAppear 0.8s ease-out 0.6s both;
+        }
+        
+        @keyframes resultAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .bmi-value {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
             font-weight: 700;
             color: #182848;
+            transition: all 0.5s ease;
+        }
+        
+        .bmi-value.updated {
+            animation: numberPulse 0.5s ease;
+        }
+        
+        @keyframes numberPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
         .bmi-category {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             margin-top: 10px;
             font-weight: 600;
+            transition: all 0.5s ease;
+        }
+        
+        .bmi-category.updated {
+            animation: categorySlide 0.5s ease;
+        }
+        
+        @keyframes categorySlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .chart-container {
             margin-top: 30px;
-            height: 200px;
+            height: clamp(150px, 30vw, 200px);
             position: relative;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: chartAppear 0.8s ease-out 0.7s both;
+        }
+        
+        @keyframes chartAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .bmi-scale {
             display: flex;
-            height: 40px;
+            height: clamp(35px, 8vw, 40px);
             margin-top: 20px;
             border-radius: 8px;
             overflow: hidden;
+            animation: scaleAppear 0.8s ease-out 0.8s both;
+        }
+        
+        @keyframes scaleAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .scale-item {
@@ -168,9 +377,17 @@
             align-items: center;
             color: white;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: clamp(0.6rem, 1.8vw, 0.8rem);
             text-align: center;
             line-height: 1.2;
+            transition: all 0.3s;
+            padding: 2px;
+        }
+        
+        .scale-item:hover {
+            transform: scale(1.05);
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .underweight { background-color: #3498db; }
@@ -187,21 +404,64 @@
             border-right: 10px solid transparent;
             border-bottom: 15px solid #182848;
             transform: translateX(-10px);
-            transition: left 1s ease-in-out;
+            transition: left 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .pointer::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: -5px;
+            width: 10px;
+            height: 180px;
+            background: linear-gradient(to top, rgba(24, 40, 72, 0.8), transparent);
+            border-radius: 5px;
+        }
+        
+        .info, .additional-info {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            line-height: 1.5;
+            animation: infoAppear 0.8s ease-out 0.9s both;
+        }
+        
+        @keyframes infoAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .info {
-            margin-top: 20px;
-            padding: 15px;
             background-color: #e8f4fc;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            line-height: 1.5;
         }
         
-        .info h3 {
+        .additional-info {
+            background-color: #f0f8ff;
+            transition: all 0.5s ease;
+        }
+        
+        .additional-info.updated {
+            animation: infoUpdate 0.5s ease;
+        }
+        
+        @keyframes infoUpdate {
+            0% { background-color: #f0f8ff; }
+            50% { background-color: #e1f5fe; }
+            100% { background-color: #f0f8ff; }
+        }
+        
+        .info h3, .additional-info h3 {
             margin-bottom: 10px;
             color: #182848;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
         
         .info ul {
@@ -210,26 +470,38 @@
         
         .info li {
             margin-bottom: 8px;
+            transition: all 0.3s;
         }
         
-        .additional-info {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f0f8ff;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        .additional-info h3 {
-            margin-bottom: 10px;
-            color: #182848;
+        .info li:hover {
+            transform: translateX(5px);
         }
         
         .additional-info p {
             margin-bottom: 8px;
+            transition: all 0.3s;
         }
         
+        .additional-info p:hover {
+            transform: translateX(3px);
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -238,6 +510,64 @@
             .result-section {
                 border-left: none;
                 border-top: 1px solid #eee;
+            }
+            
+            .chart-container {
+                height: 150px;
+            }
+            
+            .bmi-scale {
+                height: 35px;
+            }
+            
+            .scale-item {
+                font-size: 0.7rem;
+                padding: 1px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            .calculator-section, .result-section {
+                padding: 15px;
+            }
+            
+            .chart-container {
+                height: 120px;
+            }
+            
+            .bmi-scale {
+                height: 30px;
+            }
+            
+            .scale-item {
+                font-size: 0.6rem;
+            }
+            
+            .info, .additional-info {
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .units {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .scale-item {
+                font-size: 0.55rem;
             }
         }
     </style>
@@ -284,7 +614,10 @@
                     <div id="weight-unit">kg</div>
                 </div>
                 
-                <button id="calculate-btn">Calculate BMI</button>
+                <button id="calculate-btn">
+                    <span id="btn-text">Calculate BMI</span>
+                    <span id="btn-loading" class="loading" style="display: none;"></span>
+                </button>
             </div>
             
             <div class="result-section">
@@ -333,6 +666,8 @@
             const genderInput = document.getElementById('gender');
             const ageInput = document.getElementById('age');
             const calculateBtn = document.getElementById('calculate-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnLoading = document.getElementById('btn-loading');
             const bmiValue = document.getElementById('bmi-value');
             const bmiCategory = document.getElementById('bmi-category');
             const pointer = document.getElementById('pointer');
@@ -350,6 +685,12 @@
                     weightInput.placeholder = 'Enter weight in kg';
                     heightUnit.textContent = 'cm';
                     weightUnit.textContent = 'kg';
+                    
+                    // Add animation to unit buttons
+                    metricBtn.style.animation = 'buttonPulse 0.5s ease';
+                    setTimeout(() => {
+                        metricBtn.style.animation = '';
+                    }, 500);
                 }
             });
             
@@ -362,6 +703,12 @@
                     weightInput.placeholder = 'Enter weight in lbs';
                     heightUnit.textContent = 'in';
                     weightUnit.textContent = 'lbs';
+                    
+                    // Add animation to unit buttons
+                    imperialBtn.style.animation = 'buttonPulse 0.5s ease';
+                    setTimeout(() => {
+                        imperialBtn.style.animation = '';
+                    }, 500);
                 }
             });
             
@@ -382,6 +729,21 @@
                     return;
                 }
                 
+                // Show loading state
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+                
+                // Simulate calculation delay for better UX
+                setTimeout(() => {
+                    calculateBMI(height, weight, age, gender);
+                    
+                    // Hide loading state
+                    btnText.style.display = 'inline-block';
+                    btnLoading.style.display = 'none';
+                }, 800);
+            });
+            
+            function calculateBMI(height, weight, age, gender) {
                 let bmi;
                 if (isMetric) {
                     // BMI = weight(kg) / height(m)^2
@@ -393,6 +755,18 @@
                 
                 // Round to one decimal place
                 bmi = Math.round(bmi * 10) / 10;
+                
+                // Add animation classes
+                bmiValue.classList.add('updated');
+                bmiCategory.classList.add('updated');
+                additionalInfo.classList.add('updated');
+                
+                // Remove animation classes after animation completes
+                setTimeout(() => {
+                    bmiValue.classList.remove('updated');
+                    bmiCategory.classList.remove('updated');
+                    additionalInfo.classList.remove('updated');
+                }, 500);
                 
                 // Display BMI value
                 bmiValue.textContent = bmi;
@@ -487,7 +861,7 @@
                     <p>BMI Prime: ${bmiPrime}</p>
                     <p>Ponderal Index: ${ponderalIndex} kg/m³</p>
                 `;
-            });
+            }
             
             function updatePointerPosition(bmi) {
                 const chartContainer = document.querySelector('.chart-container');
@@ -504,7 +878,7 @@
                 // Calculate position in pixels
                 const positionPx = (positionPercentage / 100) * containerWidth;
                 
-                // Update pointer position
+                // Update pointer position with animation
                 pointer.style.left = `${positionPx}px`;
             }
             
@@ -515,7 +889,7 @@
                 heightInput.value = '170';
                 weightInput.value = '52';
                 calculateBtn.click();
-            }, 500);
+            }, 1500);
         });
     </script>
 </body>
