@@ -92,6 +92,37 @@ button:hover {
   box-shadow: 0px 1px 7px 1px rgba(255, 69, 0, 0.4);
   transform: translateY(-1px);
 }
+.tool-info {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff15;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+
+.tool-info h2 {
+  font-size: 1.8rem;
+  color: #0078d7;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tool-info h3 {
+  font-size: 1.4rem;
+  color: #444;
+  margin-top: 20px;
+}
+
+.tool-info ol {
+  padding-left: 20px;
+}
+
+.tool-info ul {
+  padding-left: 40px;
+  list-style-type: disc;
+}
+
 
   </style>
   
@@ -551,6 +582,27 @@ button:hover {
       });
     }
   </script>
+  <section class="tool-info">
+  <h2>How to Use the PDF Toolkit</h2>
+  <p>Our PDF Toolkit is designed for simplicity and power, allowing you to manage your documents directly in your browser. All processing is done on your device, ensuring your files remain private and secure.</p>
+
+  <h3>Compress PDFs</h3>
+  <p>Reduce the file size of your PDFs to make them easier to email and store. Our compressor optimizes your PDF's internal structure without significantly affecting quality.</p>
+
+  <ol>
+    <li>Select the <strong>"Compress"</strong> tab.</li>
+    <li>Upload or drag and drop a single PDF file into the upload area.</li>
+    <li>Choose your desired compression level. Each level offers a different approach to file size reduction:</li>
+    <ul>
+      <li><strong>Basic:</strong> Rebuilds the PDF for good compatibility, which can often result in a smaller size.</li>
+      <li><strong>Recommended:</strong> Provides an excellent balance of size reduction and quality by using modern PDF features like object streams.</li>
+      <li><strong>Extreme:</strong> Applies the recommended compression and also removes non-essential metadata (like author or title) to save every possible kilobyte.</li>
+    </ul>
+    <li>Click the <strong>"Compress PDF"</strong> button. The tool will show you the original size, the new size, and how much space you saved.</li>
+    <li>Click the download button to save your smaller, optimized PDF file.</li>
+  </ol>
+</section>
+
 </body>
 
 </html>
