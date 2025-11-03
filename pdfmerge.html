@@ -111,6 +111,32 @@
             .container { padding: 10px; }
             p#description { font-size: 1em; }
         }
+        .tool-info {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff15;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+
+.tool-info h2 {
+  font-size: 1.8rem;
+  color: #0078d7;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tool-info h3 {
+  font-size: 1.4rem;
+  color: #444;
+  margin-top: 20px;
+}
+
+.tool-info ol {
+  padding-left: 20px;
+}
+
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
     </style>
 </head>
@@ -118,7 +144,7 @@
     <div class="container">
         <header>
             <h1>PDF Merger</h1>
-            <p id="description">Merge multiple PDF files and reorder them easily</p>
+            <p id="description">Efficiently manage your PDF files. Merge multiple documents into one or compress large files to a more manageable size.</p>
         </header>
         <main class="merger">
             <div class="file-input">
@@ -251,5 +277,22 @@
             }
         }
     </script>
+    <section class="tool-info">
+  <h2>How to Use the PDF Toolkit</h2>
+  <p>Our PDF Toolkit is designed for simplicity and power, allowing you to manage your documents directly in your browser. All processing is done on your device, ensuring your files remain private and secure.</p>
+
+  <h3>Merge PDFs</h3>
+  <p>Combine multiple PDF files into a single, organized document in just a few clicks.</p>
+
+  <ol>
+    <li>Select the <strong>"Merge"</strong> tab.</li>
+    <li>Click the upload area to select your PDF files, or simply drag and drop them into the box. You can add multiple files at once.</li>
+    <li>Once uploaded, you can drag and drop the files in the list to reorder them as needed.</li>
+    <li>When you're satisfied with the order, click the <strong>"Merge PDFs"</strong> button. The tool will process and combine them.</li>
+    <li>After a moment, a download button will appear. Click it to save your newly merged PDF.</li>
+  </ol>
+</section>
+
 </body>
+
 </html>
