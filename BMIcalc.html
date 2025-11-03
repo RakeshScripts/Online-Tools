@@ -570,6 +570,41 @@
                 font-size: 0.55rem;
             }
         }
+        .tool-info {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff15;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+
+.tool-info h2 {
+  font-size: 1.8rem;
+  color: #0078d7;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tool-info h3 {
+  font-size: 1.4rem;
+  color: #444;
+  margin-top: 20px;
+}
+
+.tool-info ol {
+  padding-left: 20px;
+}
+
+.tool-info ul {
+  padding-left: 40px;
+  list-style-type: disc;
+}
+        .tool-info ul li {
+  margin-bottom: 5px;
+}
+
+
     </style>
 </head>
 <body>
@@ -892,5 +927,32 @@
             }, 1500);
         });
     </script>
+
+    <section class="tool-info">
+  <h2>Understanding the BMI Calculator</h2>
+  <p>The Body Mass Index (BMI) is a value derived from the mass (weight) and height of a person. It helps you estimate whether your weight falls within a healthy range for your height. The BMI is defined as the body mass divided by the square of the body height, and is universally expressed in units of kg/m² — using kilograms for weight and metres for height.</p>
+
+  <h3>How It's Calculated</h3>
+  <p>The formula for BMI is straightforward and works with both metric and imperial units:</p>
+  <ul>
+    <li><strong>Metric Units:</strong> BMI = weight (kg) / (height (m))²</li>
+    <li><strong>Imperial Units:</strong> BMI = 703 × weight (lb) / (height (in))²</li>
+  </ul>
+  <p>Our calculator supports both systems. Simply select your preferred unit, enter your height and weight, and the tool will instantly compute your BMI value.</p>
+
+  <h3>Interpreting Your Results</h3>
+  <p>Your BMI result helps you understand your weight category based on <strong>World Health Organization (WHO)</strong> recommendations:</p>
+  <ul>
+    <li><strong>Below 18.5:</strong> Underweight</li>
+    <li><strong>18.5 – 24.9:</strong> Normal or Healthy Weight</li>
+    <li><strong>25.0 – 29.9:</strong> Overweight</li>
+    <li><strong>30.0 and Above:</strong> Obesity</li>
+  </ul>
+
+  <h3>Disclaimer</h3>
+  <p>While BMI is a helpful indicator for most people, it has limitations. It doesn’t distinguish between muscle and fat mass, so very muscular individuals (like athletes) may have a high BMI but low body fat. BMI should be used as a <strong>screening tool</strong>, not a diagnostic one. For a complete assessment, consult a healthcare professional who can consider factors like body composition, diet, and activity levels.</p>
+</section>
+
 </body>
 </html>
+
