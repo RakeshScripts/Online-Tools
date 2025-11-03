@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Picker & Palette Generator</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #f8f9fb, #e9efff);
+    margin: 0;
+    padding: 20px;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    color: #333;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  p {
+    text-align: center;
+    max-width: 700px;
+    color: #555;
+    margin-bottom: 25px;
+  }
+
+  .container {
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 650px;
+  }
+
+  /* Circular color picker */
+  input[type="color"] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+    box-shadow: 0 0 0 4px #fff, 0 0 10px rgba(0,0,0,0.15);
+    margin: 0 auto 20px auto;
+    display: block;
+  }
+
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+  }
+
+  .color-values {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .value-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 270px;
+    background: #f7f7f7;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+
+  .value-row span {
+    font-family: monospace;
+  }
+
+  button.copy-btn {
+    background: #0078d7;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+
+  button.copy-btn:hover {
+    background: #005fa3;
+  }
+
+  h3 {
+    margin-top: 25px;
+    text-align: center;
+    color: #333;
+  }
+
+  .palette {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .color-box {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .color-box:hover {
+    transform: scale(1.05);
+  }
+
+  .color-label {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #fff;
+    background: rgba(0,0,0,0.4);
+    border-radius: 0 0 12px 12px;
+    padding: 2px 0;
+  }
+
+  /* AdSense Section */
+  .adsense {
+    width: 100%;
+    max-width: 728px;
+    height: 90px;
+    margin: 25px auto;
+    background: #f0f3ff;
+    border: 2px dashed #b2b9ff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #667;
+    font-size: 0.95rem;
+  }
+
+  /* Educational Section */
+  .info-section {
+    margin-top: 40px;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  }
+
+  .info-section h2 {
+    color: #1a237e;
+    margin-bottom: 10px;
+  }
+
+  .info-section h3 {
+    color: #37474f;
+    margin-top: 20px;
+  }
+
+  .info-section p, .info-section li {
+    color: #444;
+    line-height: 1.6;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #555;
+    margin: 40px 0 15px;
+  }
+
+  @media (max-width: 600px) {
+    .value-row {
+      width: 95%;
+    }
+    input[type="color"] {
+      width: 120px;
+      height: 120px;
+    }
+    .color-box {
+      width: 80px;
+      height: 80px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Color Picker & Palette Generator</h1>
+<p>Pick a color below to view its HEX, RGB, and HSL values. Generate complementary and analogous palettes with one click, and copy any color code easily.</p>
+
+<div class="container">
+  <input type="color" id="colorPicker" value="#3498db">
+
+  <div class="color-values">
+    <div class="value-row"><span id="hexVal">#3498db</span><button class="copy-btn" data-target="hexVal">Copy</button></div>
+    <div class="value-row"><span id="rgbVal">rgb(52,152,219)</span><button class="copy-btn" data-target="rgbVal">Copy</button></div>
+    <div class="value-row"><span id="hslVal">hsl(204,70%,53%)</span><button class="copy-btn" data-target="hslVal">Copy</button></div>
+  </div>
+
+  <h3>Complementary Palette</h3>
+  <div class="palette" id="complementary"></div>
+
+  <h3>Analogous Palette</h3>
+  <div class="palette" id="analogous"></div>
+</div>
+
+<!-- AdSense Placeholder -->
+<!-- <div class="adsense"> -->
+  <!-- AdSense Ad Placeholder (728x90) -->
+<!-- </div> -->
+
+<div class="info-section">
+  <h2>Mastering Colors</h2>
+  <p>This tool provides a simple way to pick a color and understand its different representations, which are crucial for digital design and development. It also generates basic color schemes to help you build beautiful and harmonious palettes.</p>
+
+  <h3>Understanding Color Models</h3>
+  <ul>
+    <li><strong>HEX (Hexadecimal):</strong> A six-digit code representing the mix of Red, Green, and Blue (RGB). Common in web design (e.g., <code>#1E3A8A</code>).</li>
+    <li><strong>RGB (Red, Green, Blue):</strong> Defines a color by the intensity of each component (0–255), used for digital screens.</li>
+    <li><strong>HSL (Hue, Saturation, Lightness):</strong> Hue defines color angle (0–360°), saturation its intensity, and lightness its brightness.</li>
+  </ul>
+
+  <h3>Using Color Palettes</h3>
+  <p><strong>Complementary:</strong> Opposite colors on the color wheel. Creates high contrast for visual focus.</p>
+  <p><strong>Analogous:</strong> Adjacent colors on the color wheel. Creates harmony and smooth gradients.</p>
+  <p>Experiment with different base colors and copy your favorite combinations for design or CSS styling.</p>
+</div>
+
+<!-- <footer>© 2025 Color Picker & Palette Generator – All Rights Reserved</footer> -->
+
+<script>
+  const colorPicker = document.getElementById('colorPicker');
+  const hexVal = document.getElementById('hexVal');
+  const rgbVal = document.getElementById('rgbVal');
+  const hslVal = document.getElementById('hslVal');
+  const complementary = document.getElementById('complementary');
+  const analogous = document.getElementById('analogous');
+
+  function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  }
+
+  function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  }
+
+  function updateColors(hex) {
+    const rgb = hexToRgb(hex);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    hexVal.textContent = hex;
+    rgbVal.textContent = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+    hslVal.textContent = `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;
+    generateComplementary(hsl);
+    generateAnalogous(hsl);
+  }
+
+  function generateComplementary(hsl) {
+    complementary.innerHTML = '';
+    const compHue = (hsl.h + 180) % 360;
+    const colors = [hsl, { h: compHue, s: hsl.s, l: hsl.l }];
+    colors.forEach(c => createColorBox(complementary, hslToHex(c.h, c.s, c.l)));
+  }
+
+  function generateAnalogous(hsl) {
+    analogous.innerHTML = '';
+    const hues = [(hsl.h + 30) % 360, (hsl.h + 330) % 360];
+    hues.forEach(hue => createColorBox(analogous, hslToHex(hue, hsl.s, hsl.l)));
+  }
+
+  function createColorBox(container, color) {
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    box.style.background = color;
+    const label = document.createElement('div');
+    label.classList.add('color-label');
+    label.textContent = color;
+    box.appendChild(label);
+    box.addEventListener('click', () => {
+      navigator.clipboard.writeText(color);
+      label.textContent = "Copied!";
+      setTimeout(() => (label.textContent = color), 700);
+    });
+    container.appendChild(box);
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      navigator.clipboard.writeText(target.textContent);
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = "Copy"), 800);
+    });
+  });
+
+  colorPicker.addEventListener('input', e => updateColors(e.target.value));
+  updateColors(colorPicker.value);
+</script>
+</body>
+</html>
