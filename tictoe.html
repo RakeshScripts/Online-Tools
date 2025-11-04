@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play Tic Tac Toe Online | Fun, Free Game</title>
+  <meta name="description" content="Play Tic Tac Toe online for free! This fun and interactive version lets you challenge a friend or test your strategy. Learn the rules, tips, and fun facts about this classic game.">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      max-width: 700px;
+    }
+
+    .adsense-placeholder {
+      background: #e2e8f0;
+      width: 100%;
+      max-width: 728px;
+      height: 90px;
+      border-radius: 10px;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      font-size: 0.9rem;
+      border: 1px dashed #94a3b8;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 8px;
+      margin: 20px auto;
+    }
+
+    .cell {
+      background: white;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .cell:hover {
+      background: #f1f5f9;
+      transform: scale(1.05);
+    }
+
+    .cell.winner {
+      background: #4ade80;
+      color: white;
+      animation: glow 0.8s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #22c55e; }
+      to { box-shadow: 0 0 20px #16a34a; }
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .reset-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .reset-btn:hover {
+      background: #1e40af;
+    }
+
+    @media (max-width: 500px) {
+      .game-board {
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+      }
+      .cell {
+        font-size: 2rem;
+      }
+    }
+
+    .content {
+      max-width: 800px;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .content h2 {
+      color: #1e293b;
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+
+    .content p {
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    .content ul {
+      margin-left: 20px;
+      color: #334155;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tic Tac Toe Game</h1>
+  <p class="subtitle">
+    Play Tic Tac Toe online instantly! Challenge your mind with this simple, strategic game loved by players of all ages.
+  </p>
+
+  <!-- Top Ad Placeholder -->
+  <!-- <div class="adsense-placeholder"> -->
+    <!-- Advertisement (728x90) -->
+  <!-- </div> -->
+
+  <div class="game-board" id="gameBoard"></div>
+  <div class="status" id="status">Player X's Turn</div>
+  <button class="reset-btn" id="resetBtn">Reset Game</button>
+
+  <!-- Bottom Ad Placeholder -->
+  <!-- <div class="adsense-placeholder" style="margin-top: 25px;"> -->
+    <!-- Advertisement (Responsive) -->
+  <!-- </div> -->
+
+  <div class="content">
+    <h2>About Tic Tac Toe</h2>
+    <p>
+      Tic Tac Toe (also known as Noughts and Crosses) is one of the most popular logic games ever created.
+      It’s a simple yet powerful way to challenge your mind and test your strategy skills.
+      The objective is to align three symbols — either X or O — in a straight line across, down, or diagonally.
+    </p>
+
+    <h2>How to Play</h2>
+    <ul>
+      <li>The game is played on a 3×3 grid.</li>
+      <li>Two players take turns — one as “X” and the other as “O”.</li>
+      <li>The first player to get three marks in a row (horizontal, vertical, or diagonal) wins the game.</li>
+      <li>If all 9 squares are filled and no one wins, the game ends in a draw.</li>
+    </ul>
+
+    <h2>Tips for Winning</h2>
+    <ul>
+      <li>Always start in the corner if you go first — it gives you more chances to win.</li>
+      <li>Block your opponent’s moves before completing your own line.</li>
+      <li>Use the center square strategically — it’s the strongest position on the board.</li>
+      <li>Think ahead — Tic Tac Toe is about predicting your opponent’s next move!</li>
+    </ul>
+
+    <h2>Fun Fact</h2>
+    <p>
+      The earliest version of Tic Tac Toe dates back to ancient Egypt, over 3,000 years ago! 
+      Despite its simplicity, it remains one of the most widely played games across the world, from school notebooks to smartphones.
+    </p>
+
+    <h2>Disclaimer</h2>
+    <p>
+      This game is designed for entertainment and learning purposes only. 
+      No personal data is collected, and it’s fully browser-based — safe, fun, and free!
+    </p>
+  </div>
+
+  <footer>
+    <!-- © 2025 Tic Tac Toe Game | Designed for all ages | Safe, Free & AdSense Friendly -->
+  </footer>
+
+  <script>
+    const board = document.getElementById('gameBoard');
+    const statusText = document.getElementById('status');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let cells = Array(9).fill(null);
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.dataset.index = i;
+      cell.addEventListener('click', handleClick);
+      board.appendChild(cell);
+    }
+
+    function handleClick(e) {
+      const index = e.target.dataset.index;
+      if (!gameActive || cells[index]) return;
+
+      cells[index] = currentPlayer;
+      e.target.textContent = currentPlayer;
+
+      const winner = checkWinner();
+      if (winner) {
+        statusText.textContent = `🎉 Player ${currentPlayer} Wins!`;
+        highlightWinner(winner);
+        gameActive = false;
+      } else if (cells.every(c => c)) {
+        statusText.textContent = "😐 It's a Draw!";
+        gameActive = false;
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        statusText.textContent = `Player ${currentPlayer}'s Turn`;
+      }
+    }
+
+    function checkWinner() {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) return pattern;
+      }
+      return null;
+    }
+
+    function highlightWinner(pattern) {
+      pattern.forEach(i => {
+        document.querySelector(`[data-index='${i}']`).classList.add('winner');
+      });
+    }
+
+    resetBtn.addEventListener('click', resetGame);
+
+    function resetGame() {
+      cells = Array(9).fill(null);
+      currentPlayer = 'X';
+      gameActive = true;
+      statusText.textContent = "Player X's Turn";
+      document.querySelectorAll('.cell').forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('winner');
+      });
+    }
+  </script>
+</body>
+</html>
