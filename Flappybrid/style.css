@@ -1,9 +1,38 @@
-#canvas
-{
-    background-color:#30c0df;
-    border: 2px solid black;
-    display: block;
-    margin: auto;
-    padding: auto;
-    
+body {
+  margin: 0;
+  background: #4ec0ca;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+canvas {
+  border: 3px solid #000;
+  background: #70c5ce;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Ad container styling */
+.ad-container {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Optional: give the ad a light background to blend */
+.adsbygoogle {
+  border-radius: 8px;
+  overflow: hidden;
 }
