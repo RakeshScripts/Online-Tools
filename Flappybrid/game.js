@@ -2,11 +2,13 @@ const RAD = Math.PI / 180;
 const scrn = document.getElementById("canvas");
 const sctx = scrn.getContext("2d");
 scrn.tabIndex = 1;
+
 scrn.addEventListener("click", () => {
   switch (state.curr) {
     case state.getReady:
       state.curr = state.Play;
-      SFX.start.play();
+      SFX.stopAll(); // stop menu music
+      SFX.start.play(); // play flap sound or start effect if you want
       break;
     case state.Play:
       bird.flap();
@@ -24,11 +26,10 @@ scrn.addEventListener("click", () => {
 
 scrn.onkeydown = function keyDown(e) {
   if (e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 38) {
-    // Space Key or W key or arrow up
     switch (state.curr) {
       case state.getReady:
         state.curr = state.Play;
-        SFX.start.play();
+        SFX.stopAll();
         break;
       case state.Play:
         bird.flap();
@@ -53,6 +54,7 @@ const state = {
   Play: 1,
   gameOver: 2,
 };
+
 const SFX = {
   start: new Audio(),
   flap: new Audio(),
@@ -61,6 +63,21 @@ const SFX = {
   die: new Audio(),
   played: false,
 };
+
+// 🪄 stopAll sound fix
+SFX.stopAll = function () {
+  this.start.pause();
+  this.start.currentTime = 0;
+  this.flap.pause();
+  this.flap.currentTime = 0;
+  this.score.pause();
+  this.score.currentTime = 0;
+  this.hit.pause();
+  this.hit.currentTime = 0;
+  this.die.pause();
+  this.die.currentTime = 0;
+};
+
 const gnd = {
   sprite: new Image(),
   x: 0,
@@ -75,19 +92,21 @@ const gnd = {
     this.x = this.x % (this.sprite.width / 2);
   },
 };
+
 const bg = {
   sprite: new Image(),
   x: 0,
   y: 0,
   draw: function () {
-    y = parseFloat(scrn.height - this.sprite.height);
+    let y = parseFloat(scrn.height - this.sprite.height);
     sctx.drawImage(this.sprite, this.x, y);
   },
 };
+
 const pipe = {
   top: { sprite: new Image() },
   bot: { sprite: new Image() },
-  gap: 160,
+  gap: 130, // easier gap
   moved: true,
   pipes: [],
   draw: function () {
@@ -103,10 +122,10 @@ const pipe = {
   },
   update: function () {
     if (state.curr != state.Play) return;
-    if (frames % 160 == 0) {
+    if (frames % 140 == 0) {
       this.pipes.push({
         x: parseFloat(scrn.width),
-        y: -210 * Math.min(Math.random() + 1, 1.5),
+        y: -200 * Math.min(Math.random() + 1, 1.5),
       });
     }
     this.pipes.forEach((pipe) => {
@@ -119,6 +138,7 @@ const pipe = {
     }
   },
 };
+
 const bird = {
   animations: [
     { sprite: new Image() },
@@ -149,7 +169,14 @@ const bird = {
         this.rotatation = 0;
         this.y += frames % 10 == 0 ? Math.sin(frames * RAD) : 0;
         this.frame += frames % 10 == 0 ? 1 : 0;
+
+        // optional: play start music only once on ready screen
+        if (SFX.start.paused) {
+          SFX.start.loop = true;
+          SFX.start.play();
+        }
         break;
+
       case state.Play:
         this.frame += frames % 5 == 0 ? 1 : 0;
         this.y += this.speed;
@@ -157,9 +184,10 @@ const bird = {
         this.speed += this.gravity;
         if (this.y + r >= gnd.y || this.collisioned()) {
           state.curr = state.gameOver;
+          SFX.stopAll(); // ✅ stop any ongoing sound
         }
-
         break;
+
       case state.gameOver:
         this.frame = 1;
         if (this.y + r < gnd.y) {
@@ -175,7 +203,6 @@ const bird = {
             SFX.played = true;
           }
         }
-
         break;
     }
     this.frame = this.frame % this.animations.length;
@@ -216,14 +243,12 @@ const bird = {
     }
   },
 };
+
 const UI = {
   getReady: { sprite: new Image() },
   gameOver: { sprite: new Image() },
   tap: [{ sprite: new Image() }, { sprite: new Image() }],
-  score: {
-    curr: 0,
-    best: 0,
-  },
+  score: { curr: 0, best: 0 },
   x: 0,
   y: 0,
   tx: 0,
@@ -240,6 +265,7 @@ const UI = {
         sctx.drawImage(this.getReady.sprite, this.x, this.y);
         sctx.drawImage(this.tap[this.frame].sprite, this.tx, this.ty);
         break;
+
       case state.gameOver:
         this.y = parseFloat(scrn.height - this.gameOver.sprite.height) / 2;
         this.x = parseFloat(scrn.width - this.gameOver.sprite.width) / 2;
@@ -281,7 +307,6 @@ const UI = {
           sctx.fillText(sc, scrn.width / 2 - 85, scrn.height / 2 + 15);
           sctx.strokeText(sc, scrn.width / 2 - 85, scrn.height / 2 + 15);
         }
-
         break;
     }
   },
@@ -292,6 +317,7 @@ const UI = {
   },
 };
 
+// 🖼️ Image sources
 gnd.sprite.src = "img/ground.png";
 bg.sprite.src = "img/BG.png";
 pipe.top.sprite.src = "img/toppipe.png";
@@ -304,12 +330,15 @@ bird.animations[0].sprite.src = "img/bird/b0.png";
 bird.animations[1].sprite.src = "img/bird/b1.png";
 bird.animations[2].sprite.src = "img/bird/b2.png";
 bird.animations[3].sprite.src = "img/bird/b0.png";
+
+// 🎵 Sound sources
 SFX.start.src = "sfx/start.wav";
 SFX.flap.src = "sfx/flap.wav";
 SFX.score.src = "sfx/score.wav";
 SFX.hit.src = "sfx/hit.wav";
 SFX.die.src = "sfx/die.wav";
 
+// 🎮 Main Game Loop
 function gameLoop() {
   update();
   draw();
@@ -328,7 +357,6 @@ function draw() {
   sctx.fillRect(0, 0, scrn.width, scrn.height);
   bg.draw();
   pipe.draw();
-
   bird.draw();
   gnd.draw();
   UI.draw();
