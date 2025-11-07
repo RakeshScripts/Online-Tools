@@ -87,7 +87,7 @@ const bg = {
 const pipe = {
   top: { sprite: new Image() },
   bot: { sprite: new Image() },
-  gap: 130,
+  gap: 150,
   moved: true,
   pipes: [],
   draw: function () {
@@ -103,7 +103,7 @@ const pipe = {
   },
   update: function () {
     if (state.curr != state.Play) return;
-    if (frames % 140 == 0) {
+    if (frames % 160 == 0) {
       this.pipes.push({
         x: parseFloat(scrn.width),
         y: -210 * Math.min(Math.random() + 1, 1.5),
