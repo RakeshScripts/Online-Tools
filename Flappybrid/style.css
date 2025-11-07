@@ -4,7 +4,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
   flex-direction: column;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -13,7 +13,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
 }
 
 canvas {
@@ -23,16 +23,16 @@ canvas {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Ad container styling */
-.ad-container {
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+/* ✅ Banner Ad Styling */
+.banner-ad {
   margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
-/* Optional: give the ad a light background to blend */
-.adsbygoogle {
+.banner-ad ins {
   border-radius: 8px;
-  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
