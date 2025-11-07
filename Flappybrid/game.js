@@ -103,10 +103,10 @@ const pipe = {
   },
   update: function () {
     if (state.curr != state.Play) return;
-    if (frames % 100 == 0) {
+    if (frames % 140 == 0) {
       this.pipes.push({
         x: parseFloat(scrn.width),
-        y: -210 * Math.min(Math.random() + 1, 1.8),
+        y: -210 * Math.min(Math.random() + 1, 1.5),
       });
     }
     this.pipes.forEach((pipe) => {
