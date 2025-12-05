@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Content Portal</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Set default font to Inter, as required */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #eef2ff; /* Very light subtle purple background */
+            /* Hide default cursor to use custom one */
+            cursor: none; 
+        }
+
+        main {
+            flex-grow: 1;
+        }
+
+        /* --- Custom Cursor Follower CSS --- */
+        #cursor-follower {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            background: #8b5cf6; /* Secondary color */
+            border-radius: 50%;
+            pointer-events: none; /* Allows clicks to pass through */
+            z-index: 9999; /* Highest layer */
+            opacity: 0.2;
+            mix-blend-mode: multiply;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        /* --- Iframe Viewer CSS --- */
+        .iframe-viewer {
+            position: fixed;
+            /* Constraints to sit precisely between the header (64px) and footer (~80px) */
+            left: 0;
+            right: 0;
+            top: 64px; /* Starts right below the h-16 header */
+            bottom: 80px; /* Ends right above the footer */
+            z-index: 50; 
+            background-color: rgba(17, 24, 39, 0.98); 
+            display: none; 
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0; 
+        }
+
+        /* Ensure the inner container respects the new height */
+        .iframe-viewer > div {
+            height: 100%;
+            padding-top: 1rem; /* Add some top/bottom padding inside the viewer */
+            padding-bottom: 1rem; 
+        }
+
+        /* Reposition the close button relative to the top edge of the viewer */
+        .iframe-viewer button {
+            position: absolute;
+            top: 1rem; /* Adjusting position slightly lower */
+            right: 1rem; 
+            margin: 0; /* Remove default negative margins */
+            transform: none; /* Reset transform */
+            z-index: 51; /* Keep it above the iframe box */
+        }
+
+        .content-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 1.5rem; /* Larger rounded corners */
+            background-color: white; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow */
+        }
+        
+        /* Make content tiles look more like cards */
+        .content-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .content-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-5px) scale(1.02);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5',
+                        'secondary': '#8b5cf6',
+                        'accent-dark': '#3730a3',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-gray-800">
+
+    <!-- Custom Cursor Follower Element -->
+    <div id="cursor-follower"></div>
+
+    <!-- Header (Static) -->
+    <header class="sticky top-0 z-40 bg-white shadow-xl border-b-4 border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Title -->
+                <div class="flex-shrink-0">
+                    <a href="#" onclick="closeIframe()" class="text-3xl font-extrabold text-primary hover:text-secondary transition duration-300">
+                        Portal.io
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="flex space-x-4">
+                    <a href="#" onclick="closeIframe()" class="text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">About Us</a>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="flex items-center text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">
+                            Resources
+                            <!-- Chevron Down Icon -->
+                            <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Content -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 rounded-lg shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50" 
+                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+                            <div class="py-1" role="none">
+                                <!-- Using placeholder URLs. Replace with your actual HTML files -->
+                                <a href="#" onclick="openIframe('https://placehold.co/800x600/3B82F6/fff?text=Page+1+Report')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">Project Alpha</a>
+                                <a href="#" onclick="openIframe('https://placehold.co/800x600/10B981/fff?text=Page+2+Strategy')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">Quarterly Strategy</a>
+                                <a href="#" onclick="openIframe('https://placehold.co/800x600/F59E0B/fff?text=Page+3+Tools')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">Development Tools</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!-- Include Alpine.js for simple dropdown logic -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Main Content Area: Grid View -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 id="main-title" class="text-4xl font-extrabold text-accent-dark mb-8 text-center sm:text-left">Explore Our Dynamic Content</h1>
+        
+        <!-- Placeholder for the content tiles -->
+        <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Tiles will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer (Static) -->
+    <footer class="bg-gray-900 text-white mt-auto">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            &copy; <span id="year"></span> Dynamic Portal. All rights reserved. | Built with <span class="text-primary">Gemini</span>.
+        </div>
+    </footer>
+
+    <!-- Iframe Viewer Modal -->
+    <div id="iframe-viewer" class="iframe-viewer">
+        <div class="max-w-7xl h-full mx-auto p-4 sm:p-6 lg:p-8">
+            <!-- Iframe Container with Close Button -->
+            <div class="relative h-full">
+                
+                <!-- Close Button -->
+                <button onclick="closeIframe()" class="p-3 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-xl z-50 transition transform hover:scale-110 focus:outline-none" aria-label="Close Content Viewer">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+
+                <!-- Responsive Iframe -->
+                <iframe id="content-iframe" class="content-iframe" title="Dynamic Content"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- CONSTANTS AND DATA ---
+        // IMPORTANT: Replace these Google search URLs with the paths to your actual HTML files (e.g., 'page1.html', 'blog/post.html', etc.)
+        const CONTENT_PAGES = [
+            { title: "Page 1: Project Overview", description: "A detailed look at the initial project scope and goals. Click to view this page in the viewer.", url: "pdfmerge.html", color: "bg-indigo-600" },
+            { title: "Page 2: Marketing Strategy", description: "Our plan for reaching new customers and engaging the audience.", url: "https://www.google.com/search?q=marketing+strategy", color: "bg-green-600" },
+            { title: "Page 3: Development Blog", description: "Technical deep dives and notes from the engineering team.", url: "https://www.google.com/search?q=software+engineering", color: "bg-yellow-600" },
+            { title: "Page 4: Sales Figures Report", description: "View the Q3 and Q4 financial performance metrics.", url: "https://www.google.com/search?q=financial+report", color: "bg-red-600" },
+            { title: "Page 5: HR Onboarding Guide", description: "Information for new employees joining the team.", url: "https://www.google.com/search?q=hr+onboarding+guide", color: "bg-purple-600" },
+            { title: "Page 6: Design System Docs", description: "Documentation for reusable UI components and guidelines.", url: "https://www.google.com/search?q=design+system+documentation", color: "bg-teal-600" }
+        ];
+
+        // --- DOM REFERENCES ---
+        const iframeViewer = document.getElementById('iframe-viewer');
+        const contentIframe = document.getElementById('content-iframe');
+        const contentGrid = document.getElementById('content-grid');
+        const cursorFollower = document.getElementById('cursor-follower');
+
+
+        /**
+         * Generates the HTML for a single content tile in the grid.
+         * @param {object} page - The page data object.
+         * @returns {string} The HTML string for the tile.
+         */
+        function createTileHtml(page) {
+            return `
+                <div class="content-card ${page.color} p-6 rounded-2xl cursor-pointer text-white" 
+                     onclick="openIframe('${page.url}')">
+                    <h2 class="text-2xl font-bold mb-3">${page.title}</h2>
+                    <p class="text-sm opacity-90">${page.description}</p>
+                    <button class="mt-5 inline-flex items-center text-xs font-semibold bg-white text-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg transition transform hover:scale-[1.05]">
+                        Launch Viewer
+                    </button>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the grid of content tiles.
+         */
+        function renderGrid() {
+            contentGrid.innerHTML = CONTENT_PAGES.map(createTileHtml).join('');
+        }
+
+        /**
+         * Opens the iframe viewer and loads the specified URL.
+         * NOTE: Header and Footer are no longer hidden here.
+         * @param {string} url - The URL of the external page to load.
+         */
+        function openIframe(url) {
+            // 1. Load the URL into the iframe
+            contentIframe.src = url;
+            
+            // 2. Hide the main grid content only
+            document.querySelector('main').classList.add('hidden');
+            
+            // 3. Show the iframe viewer with transition
+            iframeViewer.style.display = 'block';
+            setTimeout(() => {
+                iframeViewer.style.opacity = '1';
+            }, 10); 
+        }
+
+        /**
+         * Closes the iframe viewer and returns to the main grid.
+         * NOTE: Header and Footer are no longer manipulated here.
+         */
+        function closeIframe() {
+            // 1. Hide the iframe viewer with transition
+            iframeViewer.style.opacity = '0';
+            
+            // 2. Wait for transition to complete before setting display: none
+            setTimeout(() => {
+                iframeViewer.style.display = 'none';
+                contentIframe.src = ''; // Unload content
+                
+                // 3. Show the main grid
+                document.querySelector('main').classList.remove('hidden');
+            }, 300); // Must match CSS transition duration
+        }
+
+        // --- CURSOR ANIMATION LOGIC ---
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+        const speed = 0.1; // Lower is slower/smoother
+
+        /**
+         * Updates the position of the custom cursor element.
+         */
+        function animateCursor() {
+            // Calculate the distance to move
+            followerX += (mouseX - followerX) * speed;
+            followerY += (mouseY - followerY) * speed;
+
+            // Apply the new position
+            cursorFollower.style.transform = `translate(-50%, -50%) translate3d(${followerX}px, ${followerY}px, 0)`;
+
+            // Request the next frame for smooth animation
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Event listener to capture mouse position
+        document.addEventListener('mousemove', (e) => {
+            // Update target coordinates
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderGrid();
+            // Start the cursor animation loop
+            animateCursor();
+            // Set the current year in the footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+        };
+
+    </script>
+</body>
+</html>
