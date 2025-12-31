@@ -3,326 +3,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Tools Portal</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9636366571895066"
-    crossorigin="anonymous"></script>
-    <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "tun5coh9u0");
-</script>
+    <title>You ❤️ PDF | Minimal & Fast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Set default font to Inter, as required */
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 0% 0%, #e0e7ff 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #f1f5f9 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* --- Header & Dropdown --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.8rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            text-decoration: none;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        /* Dropdown Logic */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 0;
+            font-family: inherit;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            right: 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text-main);
+            padding: 12px 16px;
+            display: block;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown:hover .dropbtn { color: var(--primary); }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 60px 20px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #1e293b, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Tools Layout --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: "";
+            height: 2px;
+            flex-grow: 1;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            text-decoration: none;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
-            background-color: #eef2ff; /* Very light subtle purple background */
-            /* Hide default cursor to use custom one */
-            cursor: none; 
+            gap: 8px;
         }
 
-        main {
-            flex-grow: 1;
+        .tool-card:hover {
+            background: white;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
         }
 
-        /* --- Custom Cursor Follower CSS --- */
-        #cursor-follower {
-            position: fixed;
-            width: 30px;
-            height: 30px;
-            background: #8b5cf6; /* Secondary color */
-            border-radius: 50%;
-            pointer-events: none; /* Allows clicks to pass through */
-            z-index: 9999; /* Highest layer */
-            opacity: 0.2;
-            mix-blend-mode: multiply;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.2s, transform 0.1s;
+        .tool-icon {
+            font-size: 1.5rem;
         }
 
-        /* --- Iframe Viewer CSS --- */
-        .iframe-viewer {
-            position: fixed;
-            /* Constraints to sit precisely between the header (64px) and footer (~80px) */
-            left: 0;
-            right: 0;
-            top: 64px; /* Starts right below the h-16 header */
-            bottom: 80px; /* Ends right above the footer */
-            z-index: 50; 
-            background-color: rgba(17, 24, 39, 0.98); 
-            display: none; 
-            transition: opacity 0.3s ease-in-out;
-            opacity: 0; 
+        .tool-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
-        /* Ensure the inner container respects the new height */
-        .iframe-viewer > div {
-            height: 100%;
-            padding-top: 1rem; /* Add some top/bottom padding inside the viewer */
-            padding-bottom: 1rem; 
+        .tool-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
 
-        /* Reposition the close button relative to the top edge of the viewer */
-        .iframe-viewer button {
-            position: absolute;
-            top: 1rem; /* Adjusting position slightly lower */
-            right: 1rem; 
-            margin: 0; /* Remove default negative margins */
-            transform: none; /* Reset transform */
-            z-index: 51; /* Keep it above the iframe box */
+        .tool-action {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
         }
 
-        .content-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 1.5rem; /* Larger rounded corners */
-            background-color: white; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow */
-        }
-        
-        /* Make content tiles look more like cards */
-        .content-card {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* --- Information Section --- */
+        .info-section {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            text-align: left;
         }
 
-        .content-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transform: translateY(-5px) scale(1.02);
+        .info-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .info-section p {
+            margin-bottom: 1.2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .info-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* --- Utilities --- */
+        .ad-space {
+            margin: 40px 0;
+            background: rgba(99, 102, 241, 0.03);
+            border: 1px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .tools-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#4f46e5',
-                        'secondary': '#8b5cf6',
-                        'accent-dark': '#3730a3',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body class="text-gray-800">
+<body>
 
-    <!-- Custom Cursor Follower Element -->
-    <div id="cursor-follower"></div>
-
-    <!-- Header (Static) -->
-    <header class="sticky top-0 z-40 bg-white shadow-xl border-b-4 border-primary">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo/Title -->
-                <div class="flex-shrink-0">
-                    <a href="#" onclick="closeIframe()" class="text-3xl font-extrabold text-primary hover:text-secondary transition duration-300">
-                        Inno Tools
-                    </a>
-                </div>
-
-                <!-- Navigation Menu -->
-                <nav class="flex space-x-4">
-                    <a href="#" onclick="closeIframe()" class="text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">Home</a>
-                    <a href="#" class="text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">About Us</a>
-                    
-                    <!-- Dropdown Menu -->
-                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="flex items-center text-gray-600 hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition duration-150 transform hover:translate-y-[-1px]">
-                            Other Tools
-                            <!-- Chevron Down Icon -->
-                            <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        
-                        <!-- Dropdown Content -->
-                        <div x-show="open" 
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-48 rounded-lg shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50" 
-                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
-                            <div class="py-1" role="none">
-                                <!-- Using placeholder URLs. Replace with your actual HTML files -->
-                                <a href="SVGtoPNG.html" onclick="openIframe('https://placehold.co/800x600/3B82F6/fff?text=Page+1+Report')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">SVG to PNG convertor</a>
-                                <a href="BMPtoPNG.html" onclick="openIframe('https://placehold.co/800x600/10B981/fff?text=Page+2+Strategy')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">BMP to PNG convertor</a>
-                                <a href="TIFFtoJPG.html" onclick="openIframe('https://placehold.co/800x600/F59E0B/fff?text=Page+3+Tools')" class="text-gray-700 block px-4 py-2 text-sm hover:bg-indigo-50 hover:text-primary">TIFF to JPG convertor</a>
-                            </div>
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo"><span></span> You ❤️ PDF</a>
+            <nav>
+                <ul>
+				<li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">PDF to Word</a></li>
+                    <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">PDF Merger</a></li>
+                    <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">PDF Compressor</a></li>
+                    <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Image Compressor</a></li>
+                    <li class="dropdown">
+                        <button class="dropbtn">Tools ▼</button>
+                        <div class="dropdown-content">
+                            <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                            <a href="pdf-merger.html">PDF Merger</a>
+                            <a href="pdf-compressor.html">PDF Compressor</a>
+                            <a href="pdf-split.html">PDF Split</a>
+                            <a href="pdf-to-jpg.html">PDF to JPG</a>
+                            <a href="pdf-to-png.html">PDF to PNG</a>
+                            <a href="pdf-to-xml.html">PDF to xml</a>
+                            <a href="pdf-to-yaml.html">PDF to yaml</a>
+                            <a href="pdf-to-base64.html">PDF to base64</a>
                         </div>
-                    </div>
-                </nav>
-            </div>
+                    </li>
+					<li class="dropdown">
+                        <button class="dropbtn">Utility ▼</button>
+                        <div class="dropdown-content">
+                            <a href="word-counter.html">Word Counter</a>
+                            <a href="unit-converter.html">unit Convertor</a>
+                            <a href="qr-generator.html">QR Generator</a>
+                            
+                        </div>
+                    </li>
+					<li class="dropdown">
+                        <button class="dropbtn">Calculators ▼</button>
+                        <div class="dropdown-content">
+                            <a href="bmi-calculator.html">Body Mass index caculator</a>
+                            <a href="age-calculator.html">Real-time Age Caculator</a>
+                                                        
+                        </div>
+                    </li>
+                    
+                </ul>
+            </nav>
         </div>
     </header>
-    <!-- Include Alpine.js for simple dropdown logic -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Main Content Area: Grid View -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 id="main-title" class="text-4xl font-extrabold text-accent-dark mb-8 text-center sm:text-left">Explore Our Digital Tools</h1>
+    <section class="hero">
+        <h1>Smart Tools. Simple Design.</h1>
+        <p class="hero-desc">You ❤️ PDF is your all-in-one destination for fast, reliable, and secure web utilities. We simplify your digital workflow by providing essential tools that work directly in your browser without the need for complex software installations.</p>
+        <p style="font-size: 0.9rem; color: var(--primary); font-weight: 600;">Free to use. No registration required. 100% Secure.</p>
+    </section>
+
+    <main class="main-content">
         
-        <!-- Placeholder for the content tiles -->
-        <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Tiles will be injected here by JavaScript -->
+        <section class="category-section" id="pdf-section">
+            <h2 class="section-title">📄 Tools</h2>
+            <div class="tools-grid">
+                <a href="pdf-merger.html" class="tool-card">
+                    <div class="tool-icon">📂</div>
+                    <h3 class="tool-title">PDF Merger</h3>
+                    <p class="tool-desc">Combine multiple PDF documents into one cleanly formatted file.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+
+                <a href="pdf-split.html" class="tool-card">
+                    <div class="tool-icon">✂️</div>
+                    <h3 class="tool-title">PDF Splitter</h3>
+                    <p class="tool-desc">Extract specific pages or split your PDF into individual files.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="pdf-compressor.html" class="tool-card">
+                    <div class="tool-icon">📥</div>
+                    <h3 class="tool-title">PDF Compressor</h3>
+                    <p class="tool-desc">Rebuilds the PDF to remove incremental saves, ghost objects & metadata.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="https://ilovepdf2.com/pdf-to-word-converter/" class="tool-card">
+                    <div class="tool-icon">📘</div>
+                    <h3 class="tool-title">PDF to Word</h3>
+                    <p class="tool-desc">Extracts text from PDF and converts it to a Word (.docx) file.
+							100% private — runs in your browser.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="image-compressor.html" class="tool-card">
+                    <div class="tool-icon">📸</div>
+                    <h3 class="tool-title">Pro Image Compressor</h3>
+                    <p class="tool-desc">Optimize JPG, PNG & WebP files with zero quality loss.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				
+				<a href="pdf-to-jpg.html" class="tool-card">
+                    <div class="tool-icon">📄</div>
+                    <h3 class="tool-title">PDF to JPG & JPG to PDF</h3>
+                    <p class="tool-desc">Switch between PDF and JPG formats in seconds.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="pdf-to-png.html" class="tool-card">
+                    <div class="tool-icon">📄</div>
+                    <h3 class="tool-title">PDF to PNG & PNG to PDF</h3>
+                    <p class="tool-desc">Lossless conversion between PDF documents and PNG images.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="image-to-svg.html" class="tool-card">
+                    <div class="tool-icon">📐</div>
+                    <h3 class="tool-title">Image to SVG</h3>
+                    <p class="tool-desc">Convert JPG and PNG to high-quality, scalable SVG vectors instantly..</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				<a href="image-resizer.html" class="tool-card">
+                    <div class="tool-icon">📏</div>
+                    <h3 class="tool-title">Image Resizer</h3>
+                    <p class="tool-desc">Scale your images to exact pixel dimensions. Turn off "Aspect Locked" to set Width and Height independently.</p>
+                    <div class="tool-action">Open Tool →</div>
+                </a>
+				
+            </div>
+        </section>
+
+        <section class="category-section" id="calc-section">
+            <h2 class="section-title">🧮 Calculators</h2>
+            <div class="tools-grid">
+                <a href="age-calculator.html" class="tool-card">
+                    <div class="tool-icon">⏳</div>
+                    <h3 class="tool-title">Age Calculator</h3>
+                    <p class="tool-desc">Get your precise age down to the minute for any date.</p>
+                    <div class="tool-action">Calculate →</div>
+                </a>
+
+                <a href="sip-calculator.html" class="tool-card">
+                    <div class="tool-icon">📈</div>
+                    <h3 class="tool-title">SIP Calculator</h3>
+                    <p class="tool-desc">Plan your wealth by calculating future returns on investments.</p>
+                    <div class="tool-action">Calculate →</div>
+                </a>
+				<a href="bmi-calculator.html" class="tool-card">
+                    <div class="tool-icon">🧮</div>
+                    <h3 class="tool-title">BMI Calculator</h3>
+                    <p class="tool-desc">Calculate BMI and get personalized health suggestions.</p>
+                    <div class="tool-action">Calculate →</div>
+                </a>
+            </div>
+        </section>
+		<section class="category-section" id="calc-section">
+            <h2 class="section-title">🧮 Utility Tool</h2>
+            <div class="tools-grid">
+                <a href="word-counter.html" class="tool-card">
+                    <div class="tool-icon">⏳</div>
+                    <h3 class="tool-title">Word Counter</h3>
+                    <p class="tool-desc">Count words, characters, and estimate reading time instantly.</p>
+                    <div class="tool-action">Open →</div>
+                </a>
+				<a href="unit-converter.html" class="tool-card">
+                    <div class="tool-icon">⚖️</div>
+                    <h3 class="tool-title">Unit Converter</h3>
+                    <p class="tool-desc">Convert length, weight and temperature instantly.</p>
+                    <div class="tool-action">Open →</div>
+                </a>
+				<a href="qr-generator.html" class="tool-card">
+                    <div class="tool-icon">🔳</div>
+                    <h3 class="tool-title">QR generator</h3>
+                    <p class="tool-desc">Generate QR codes for text, links, phone numbers & more</p>
+                    <div class="tool-action">Open →</div>
+                </a>
+				<a href="url-short.html" class="tool-card">
+                    <div class="tool-icon">🔗</div>
+                    <h3 class="tool-title">URL Shortner</h3>
+                    <p class="tool-desc">Transform long, complex links into clean, shareable short URLs.</p>
+                    <div class="tool-action">Open →</div>
+                </a>
+
+                
+            </div>
+        </section>
+        <section class="info-section">
+            <h2>Why Use You ❤️ PDF?</h2>
+            <p>In today's fast-paced digital world, efficiency is everything. You ❤️ PDF was created to bridge the gap between complex professional software and the everyday user. Our platform offers a suite of high-performance tools designed to handle your PDF management and financial planning needs with just a few clicks.</p>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>Comprehensive PDF Management</h3>
+                    <p>Our PDF suite allows you to merge documents for better organization or split large files into manageable parts. Whether you are a student organizing lecture notes or a professional handling contracts, our tools ensure your documents remain high-quality and perfectly formatted.</p>
+                </div>
+                <div class="info-item">
+                    <h3>Advanced Financial Calculators</h3>
+                    <p>Planning for the future shouldn't be difficult. Our SIP (Systematic Investment Plan) calculator helps you visualize your long-term wealth growth, while our precision Age Calculator is perfect for official documentation or personal milestones.</p>
+                </div>
+                <div class="info-item">
+                    <h3>Privacy & Security First</h3>
+                    <p>We believe your data belongs to you. Most of our tools process information locally in your browser, meaning your sensitive PDF files and personal data never touch our servers. Experience the peace of mind that comes with professional-grade security.</p>
+                </div>
+                <div class="info-item">
+                    <h3>Lightning Fast Experience</h3>
+                    <p>Built on a minimal and optimized codebase, You ❤️ PDF loads instantly on any device. We've eliminated unnecessary bloat to give you a clean, distraction-free environment to get your work done faster than ever before.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="ad-space">
+            <p style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em; margin-bottom: 5px;">Sponsorship</p>
+            <div style="font-size: 1rem; font-weight: 600; color: var(--primary);">Your Brand Hub</div>
         </div>
+        
     </main>
 
-    <!-- Footer (Static) -->
-    <footer class="bg-gray-900 text-white mt-auto">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
-            &copy; <span id="year"></span> Innogadgets. All rights reserved.</span>.
-        </div>
+    <footer>
+        <p>&copy; 2025 You ❤️ PDF. Your one-stop shop for productivity tools.</p>
     </footer>
 
-    <!-- Iframe Viewer Modal -->
-    <div id="iframe-viewer" class="iframe-viewer">
-        <div class="max-w-full h-full mx-auto p-4 sm:p-6 lg:p-8">
-            <!-- Iframe Container with Close Button -->
-            <div class="relative h-full">
-                
-                <!-- Close Button -->
-                <button onclick="closeIframe()" class="p-3 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-xl z-50 transition transform hover:scale-110 focus:outline-none" aria-label="Close Content Viewer">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-
-                <!-- Responsive Iframe -->
-                <iframe id="content-iframe" class="content-iframe" title="Dynamic Content"></iframe>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // --- CONSTANTS AND DATA ---
-        // IMPORTANT: Replace these Google search URLs with the paths to your actual HTML files (e.g., 'page1.html', 'blog/post.html', etc.)
-        const CONTENT_PAGES = [
-            { title: "PDF Merger", description: "Efficiently manage your PDF files. Merge multiple documents into one or compress large files to a more manageable size.", url: "pdfmerge.html", color: "bg-indigo-600" },
-            { title: "PDF Compressor", description: "Our PDF Toolkit is designed for simplicity and power.", url: "./CompressPDF-master/pdfcompress.html", color: "bg-green-600" },
-            { title: "Image Compressor", description: "Reduce the size of your images instantly", url: "imagecompressor.html", color: "bg-yellow-600" },
-            { title: "HEIC to JPG convertor", description: "Convert HEIC File to JPG format easily.", url: "HEICtoJPG.html", color: "bg-red-600" },
-            { title: "BMI Calculator", description: "Calculate your Body Mass Index.", url: "BMIcalc.html", color: "bg-purple-600" },
-            { title: "Color Picker & Palette Generator", description: "Pick a color below to view its HEX, RGB, and HSL values. Generate complementary and analogous palettes with one click, and copy any color code easily.", url: "colorpicker.html", color: "bg-teal-600" },
-            { title: "Tic-Tac-Toe Game", description: "Tic-Tac-Toe, also known as Noughts and Crosses, is a classic paper-and-pencil game for two players", url: "tictoe.html", color: "bg-indigo-600" },
-             { title: "ATS Score Checker", description: "Upload your resume (PDF or .txt) or paste text — get a 1–100 ATS score + suggestions", url: "atschecker.html", color: "bg-green-600" }
-        ];
-
-        // --- DOM REFERENCES ---
-        const iframeViewer = document.getElementById('iframe-viewer');
-        const contentIframe = document.getElementById('content-iframe');
-        const contentGrid = document.getElementById('content-grid');
-        const cursorFollower = document.getElementById('cursor-follower');
-
-
-        /**
-         * Generates the HTML for a single content tile in the grid.
-         * @param {object} page - The page data object.
-         * @returns {string} The HTML string for the tile.
-         */
-        function createTileHtml(page) {
-            return `
-                <div class="content-card ${page.color} p-6 rounded-2xl cursor-pointer text-white" 
-                     onclick="openIframe('${page.url}')">
-                    <h2 class="text-2xl font-bold mb-3">${page.title}</h2>
-                    <p class="text-sm opacity-90">${page.description}</p>
-                    <button class="mt-5 inline-flex items-center text-xs font-semibold bg-white text-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg transition transform hover:scale-[1.05]">
-                        Launch Viewer
-                    </button>
-                </div>
-            `;
-        }
-
-        /**
-         * Renders the grid of content tiles.
-         */
-        function renderGrid() {
-            contentGrid.innerHTML = CONTENT_PAGES.map(createTileHtml).join('');
-        }
-
-        /**
-         * Opens the iframe viewer and loads the specified URL.
-         * NOTE: Header and Footer are no longer hidden here.
-         * @param {string} url - The URL of the external page to load.
-         */
-        function openIframe(url) {
-            // 1. Load the URL into the iframe
-            contentIframe.src = url;
-            
-            // 2. Hide the main grid content only
-            document.querySelector('main').classList.add('hidden');
-            
-            // 3. Show the iframe viewer with transition
-            iframeViewer.style.display = 'block';
-            setTimeout(() => {
-                iframeViewer.style.opacity = '1';
-            }, 10); 
-        }
-
-        /**
-         * Closes the iframe viewer and returns to the main grid.
-         * NOTE: Header and Footer are no longer manipulated here.
-         */
-        function closeIframe() {
-            // 1. Hide the iframe viewer with transition
-            iframeViewer.style.opacity = '0';
-            
-            // 2. Wait for transition to complete before setting display: none
-            setTimeout(() => {
-                iframeViewer.style.display = 'none';
-                contentIframe.src = ''; // Unload content
-                
-                // 3. Show the main grid
-                document.querySelector('main').classList.remove('hidden');
-            }, 300); // Must match CSS transition duration
-        }
-
-        // --- CURSOR ANIMATION LOGIC ---
-        let mouseX = 0, mouseY = 0;
-        let followerX = 0, followerY = 0;
-        const speed = 0.1; // Lower is slower/smoother
-
-        /**
-         * Updates the position of the custom cursor element.
-         */
-        function animateCursor() {
-            // Calculate the distance to move
-            followerX += (mouseX - followerX) * speed;
-            followerY += (mouseY - followerY) * speed;
-
-            // Apply the new position
-            cursorFollower.style.transform = `translate(-50%, -50%) translate3d(${followerX}px, ${followerY}px, 0)`;
-
-            // Request the next frame for smooth animation
-            requestAnimationFrame(animateCursor);
-        }
-
-        // Event listener to capture mouse position
-        document.addEventListener('mousemove', (e) => {
-            // Update target coordinates
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            renderGrid();
-            // Start the cursor animation loop
-            animateCursor();
-            // Set the current year in the footer
-            document.getElementById('year').textContent = new Date().getFullYear();
-        };
-
-    </script>
 </body>
 </html>
