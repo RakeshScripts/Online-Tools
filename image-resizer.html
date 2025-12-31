@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Image Resizer | Digital Tools Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-gold: #FFD700;
+            --bg: #f8fafc;
+            --slate-dark: #2B2D42;
+            --slate-darker: #1E1E2F;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+         /* --- Navigation Header --- */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0; width: 100%; z-index: 2000;
+            height: 70px; display: flex; align-items: center;
+        }
+
+        nav {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+        .nav-link, .dropbtn {
+            background: none; border: none; font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+            cursor: pointer; text-decoration: none;
+            display: flex; align-items: center; height: 40px; padding: 0 5px;
+        }
+
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none; position: absolute; background-color: var(--white);
+            min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+            top: 100%; left: 0; padding: 8px 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text-main); padding: 10px 15px; text-decoration: none;
+            display: block; font-size: 0.85rem;
+        }
+
+        .dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* --- Tool UI --- */
+        .container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+        .info-banner {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 20px; border-radius: 16px;
+            text-align: center; margin-bottom: 25px;
+        }
+
+        .info-banner h3 { color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 5px; }
+        .info-banner p { font-size: 0.8rem; color: var(--text-muted); }
+
+        .drop-zone {
+            background: white; border: 2px dashed #cbd5e1;
+            padding: 40px 20px; text-align: center;
+            border-radius: 24px; cursor: pointer; transition: 0.3s;
+        }
+
+        .drop-zone:hover { border-color: var(--primary); background: #f1f5f9; }
+        .drop-zone.has-file { border-color: var(--primary); background: rgba(99, 102, 241, 0.02); }s
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; padding-top: 110px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 0 20px 60px; }
+
+        .banner {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .banner h3 { color: #b89b00; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.5px; margin-bottom: 5px; }
+
+        .upload-card {
+            background: #3A3D5B;
+            border: 2px dashed #4b4e6d;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 2.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-card:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
+
+        .editor-card {
+            background: var(--slate-dark);
+            padding: 35px;
+            border-radius: 2.5rem;
+            color: white;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+        }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .aspect-btn {
+            background: rgba(255,255,255,0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .aspect-btn.locked { background: var(--accent-gold); color: var(--slate-darker); border-color: var(--accent-gold); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .input-group label { display: block; color: #94a3b8; font-size: 11px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
+        .input-group input {
+            width: 100%;
+            background: var(--slate-darker);
+            border: 1px solid #4b4e6d;
+            border-radius: 18px;
+            padding: 18px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            outline: none;
+        }
+
+        .slider-header { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; margin-bottom: 12px; color: #64748b; }
+
+        .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .preview-box { background: var(--slate-dark); padding: 15px; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .img-container { height: 200px; background: rgba(0,0,0,0.3); border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
+        .img-container img { max-width: 100%; max-height: 100%; }
+        
+        .distorted img { width: 100%; height: 100%; object-fit: fill; }
+        .contained img { width: auto; height: auto; object-fit: contain; }
+
+        .download-btn {
+            flex: 1;
+            background: var(--accent-gold);
+            color: var(--slate-darker);
+            border: none;
+            padding: 20px;
+            border-radius: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(255, 215, 0, 0.3);
+        }
+
+        /* --- INFO SECTIONS --- */
+        .info-card { background: white; padding: 45px; border-radius: 2.5rem; border: 1px solid #e2e8f0; margin-top: 50px; }
+        .qna-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .tag { background: #f1f5f9; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; color: var(--primary); border: 1px solid #e2e8f0; }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--white);
+            border-top: 1px solid #e2e8f0;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+        }
+        .footer-brand h4 { font-weight: 800; color: var(--primary); margin-bottom: 15px; }
+        .footer-brand p { color: var(--text-muted); font-size: 0.9rem; max-width: 300px; }
+        .footer-links h5 { font-weight: 800; font-size: 0.8rem; text-transform: uppercase; color: var(--text-main); margin-bottom: 20px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; }
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <div class="banner">
+            <h3>Precision Resize</h3>
+            <p style="color: #64748b; font-size: 0.85rem;">Turn off "Aspect Locked" to set Width and Height independently.</p>
+        </div>
+
+        <div id="uploadView" class="upload-card" onclick="document.getElementById('fileInput').click()">
+            <span style="font-size: 4rem; margin-bottom: 15px; display: block;">🖼️</span>
+            <h2 style="color: white; text-transform: uppercase; font-weight: 900;">Upload Image</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem;">PNG, JPG or WEBP formats</p>
+            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(event)">
+        </div>
+
+        <div id="editorView" style="display: none;">
+            <div class="editor-card">
+                <div class="toggle-row">
+                    <span style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 2px;">MANUAL DIMENSIONS</span>
+                    <button id="aspectBtn" class="aspect-btn" onclick="toggleAspect()">🔓 Independent Mode</button>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Width (px)</label>
+                        <input type="number" id="widthInput" oninput="onWidthChange(this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Height (px)</label>
+                        <input type="number" id="heightInput" oninput="onHeightChange(this.value)">
+                    </div>
+                </div>
+
+                <div class="slider-section">
+                    <div class="slider-header">
+                        <span>RELATIVE SCALING</span>
+                        <span id="pctLabel" style="color: var(--accent-gold);">100%</span>
+                    </div>
+                    <input type="range" id="scaleSlider" min="1" max="500" value="100" style="width: 100%; accent-color: var(--accent-gold);" oninput="onScaleChange(this.value)">
+                    <div class="slider-header" style="margin-top: 8px; font-size: 8px;">
+                        <span>1%</span>
+                        <span>100% (ACTUAL)</span>
+                        <span>500%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-grid">
+                <div class="preview-box">
+                    <span style="font-size: 9px; font-weight: 800; color: #64748b; display: block; margin-bottom: 12px;">ORIGINAL</span>
+                    <div class="img-container"><img id="origImg" src="" style="opacity: 0.4; filter: grayscale(1);"></div>
+                </div>
+                <div class="preview-box" style="border-color: rgba(255,215,0,0.2);">
+                    <span id="outputLabel" style="font-size: 9px; font-weight: 800; color: var(--accent-gold); display: block; margin-bottom: 12px;">OUTPUT PREVIEW</span>
+                    <div id="previewContainer" class="img-container distorted"><img id="prevImg" src=""></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:800; cursor:pointer; text-transform:uppercase; font-size:11px;">Discard</button>
+                <button class="download-btn" id="dlBtn" onclick="downloadImage()">Download Resized Image</button>
+            </div>
+        </div>
+
+        <section class="info-card">
+            <h3 style="font-weight: 900; margin-bottom: 20px; font-size: 1.6rem;">Precision Image Scaling</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+                High-quality resizing requires sophisticated algorithms. Our tool uses <strong>Bicubic Interpolation</strong> logic to ensure that your photos remain sharp even after significant scaling. By processing everything in your browser, your original high-resolution data never leaves your device.
+            </p>
+            
+            
+
+            <div class="qna-grid">
+                <div class="qna-item">
+                    <h4 style="font-size: 0.9rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;">Why use Independent Mode?</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Sometimes you need to fit an image into a specific container (like a banner or profile slot) regardless of its original shape. Independent mode allows you to stretch or squash pixels to your exact requirements.</p>
+                </div>
+                <div class="qna-item">
+                    <h4 style="font-size: 0.9rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;">What is Local Processing?</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Unlike other tools, we don't upload your images to a server. This means your privacy is 100% guaranteed, and the resizing happens at the speed of your own hardware.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 35px; display: flex; flex-wrap: wrap; gap: 10px; padding-top: 25px; border-top: 1px solid #f1f5f9;">
+                <span class="tag">Image Resizer</span>
+                <span class="tag">Pixel Editor</span>
+                <span class="tag">Aspect Ratio Lock</span>
+                <span class="tag">Photo Scaler</span>
+                <span class="tag">WebP & PNG Resizer</span>
+                <span class="tag">Local Processing</span>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <!-- <div class="footer-content"> -->
+        <!-- <div class="footer-brand"> -->
+            <!-- <h4>DigitalTools Hub</h4> -->
+            <!-- <p>The ultimate suite of high-performance, privacy-first digital utilities for designers and developers.</p> -->
+        <!-- </div> -->
+        <!-- <div class="footer-links"> -->
+            <!-- <h5>Resources</h5> -->
+            <!-- <ul> -->
+                <!-- <li><a href="#">API Documentation</a></li> -->
+                <!-- <li><a href="#">Privacy Policy</a></li> -->
+                <!-- <li><a href="#">Terms of Service</a></li> -->
+            <!-- </ul> -->
+        <!-- </div> -->
+        <!-- <div class="footer-links"> -->
+            <!-- <h5>Tools</h5> -->
+            <!-- <ul> -->
+                <!-- <li><a href="#">Image Compressor</a></li> -->
+                <!-- <li><a href="#">PDF Merger</a></li> -->
+                <!-- <li><a href="#">SVG Vectorizer</a></li> -->
+            <!-- </ul> -->
+        <!-- </div> -->
+    <!-- </div> -->
+    <div class="copyright">
+        &copy; 2025 You ❤️ PDF. Secure, Local, and Lightning Fast.
+    </div>
+</footer>
+
+<canvas id="hiddenCanvas" style="display:none;"></canvas>
+
+<script>
+    let original = { w: 0, h: 0 };
+    let lockAspect = false;
+    let currentSrc = '';
+
+    function handleUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                original = { w: img.width, h: img.height };
+                currentSrc = ev.target.result;
+                
+                document.getElementById('widthInput').value = img.width;
+                document.getElementById('heightInput').value = img.height;
+                document.getElementById('origImg').src = currentSrc;
+                document.getElementById('prevImg').src = currentSrc;
+                
+                document.getElementById('uploadView').style.display = 'none';
+                document.getElementById('editorView').style.display = 'block';
+                updateLabels();
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function onWidthChange(val) {
+        const w = parseInt(val) || 0;
+        if (lockAspect && original.w > 0) {
+            const h = Math.round((w * original.h) / original.w);
+            document.getElementById('heightInput').value = h;
+        }
+        syncPercent(w, 'w');
+        updateLabels();
+    }
+
+    function onHeightChange(val) {
+        const h = parseInt(val) || 0;
+        if (lockAspect && original.h > 0) {
+            const w = Math.round((h * original.w) / original.h);
+            document.getElementById('widthInput').value = w;
+        }
+        syncPercent(h, 'h');
+        updateLabels();
+    }
+
+    function onScaleChange(pct) {
+        const p = parseInt(pct);
+        const w = Math.round((original.w * p) / 100);
+        const h = Math.round((original.h * p) / 100);
+        document.getElementById('widthInput').value = w;
+        document.getElementById('heightInput').value = h;
+        document.getElementById('pctLabel').innerText = p + '%';
+        updateLabels();
+    }
+
+    function syncPercent(val, axis) {
+        const base = axis === 'w' ? original.w : original.h;
+        const pct = Math.round((val / base) * 100);
+        document.getElementById('pctLabel').innerText = pct + '%';
+        document.getElementById('scaleSlider').value = pct;
+    }
+
+    function toggleAspect() {
+        lockAspect = !lockAspect;
+        const btn = document.getElementById('aspectBtn');
+        const prev = document.getElementById('previewContainer');
+        btn.classList.toggle('locked');
+        btn.innerText = lockAspect ? '🔒 Aspect Locked' : '🔓 Independent Mode';
+        prev.className = lockAspect ? 'img-container contained' : 'img-container distorted';
+    }
+
+    function updateLabels() {
+        const w = document.getElementById('widthInput').value;
+        const h = document.getElementById('heightInput').value;
+        document.getElementById('outputLabel').innerText = `OUTPUT PREVIEW (${w}x${h})`;
+    }
+
+    function downloadImage() {
+        const btn = document.getElementById('dlBtn');
+        btn.innerText = "PROCESSING...";
+        const w = parseInt(document.getElementById('widthInput').value);
+        const h = parseInt(document.getElementById('heightInput').value);
+        const canvas = document.getElementById('hiddenCanvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = () => {
+            canvas.width = w;
+            canvas.height = h;
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, w, h);
+            
+            const link = document.createElement('a');
+            link.download = `resized_${w}x${h}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            btn.innerText = "DOWNLOAD RESIZED IMAGE";
+        };
+        img.src = currentSrc;
+    }
+</script>
+</body>
+</html>

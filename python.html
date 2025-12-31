@@ -1,0 +1,579 @@
+// Tool Factory & Core Engine
+class ToolFactory {
+  constructor() {
+    this.tools = new Map();
+    this.genAI = null;
+    this.init();
+  }
+
+  async init() {
+    // Initialize Google Gemini (requires API key)
+    try {
+      this.genAI = new GoogleGenerativeAI('YOUR_GEMINI_API_KEY_HERE'); // Replace with actual key
+    } catch (e) {
+      console.warn('Gemini API key not configured. AI tools will be disabled.');
+    }
+
+    this.registerTools();
+    this.renderTools();
+    this.bindEvents();
+  }
+
+  registerTools() {
+    this.tools.set('pdf-to-word', {
+      name: 'PDF to Word',
+      category: 'ai',
+      icon: '📄',
+      description: 'Convert PDF to editable Word document using AI',
+      component: this.createPDFToWordTool.bind(this)
+    });
+
+    this.tools.set('pdf-to-excel', {
+      name: 'PDF to Excel',
+      category: 'ai',
+      icon: '📊',
+      description: 'Extract tables from PDF to Excel format',
+      component: this.createPDFToExcelTool.bind(this)
+    });
+
+    this.tools.set('image-converter', {
+      name: 'Image Converter',
+      category: 'media',
+      icon: '🖼️',
+      description: 'Convert between JPG, PNG, WebP, SVG',
+      component: this.createImageConverter.bind(this)
+    });
+
+    this.tools.set('qr-generator', {
+      name: 'QR Generator',
+      category: 'media',
+      icon: '📱',
+      description: 'Generate QR codes from text/URL',
+      component: this.createQRGenerator.bind(this)
+    });
+
+    this.tools.set('bmi-calculator', {
+      name: 'BMI Calculator',
+      category: 'calc',
+      icon: '⚖️',
+      description: 'Calculate your Body Mass Index',
+      component: this.createBMICalculator.bind(this)
+    });
+
+    this.tools.set('word-counter', {
+      name: 'Word Counter',
+      category: 'text',
+      icon: '📝',
+      description: 'Count words, characters, reading time',
+      component: this.createWordCounter.bind(this)
+    });
+
+    this.tools.set('password-generator', {
+      name: 'Password Generator',
+      category: 'text',
+      icon: '🔐',
+      description: 'Generate secure high-entropy passwords',
+      component: this.createPasswordGenerator.bind(this)
+    });
+
+    this.tools.set('json-formatter', {
+      name: 'JSON Formatter',
+      category: 'text',
+      icon: '🔧',
+      description: 'Format, validate, and beautify JSON',
+      component: this.createJSONFormatter.bind(this)
+    });
+
+    this.tools.set('text-to-speech', {
+      name: 'Text to Speech',
+      category: 'text',
+      icon: '🔊',
+      description: 'Convert text to natural speech',
+      component: this.createTextToSpeech.bind(this)
+    });
+  }
+
+  renderTools() {
+    const grid = document.getElementById('toolsGrid');
+    grid.innerHTML = '';
+
+    for (const [id, tool] of this.tools) {
+      const card = this.createToolCard(id, tool);
+      grid.appendChild(card);
+    }
+  }
+
+  createToolCard(id, tool) {
+    const card = document.createElement('div');
+    card.className = 'card-hover group bg-white/10 glass rounded-3xl p-8 cursor-pointer h-48 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl border border-white/20';
+    card.dataset.id = id;
+    card.dataset.category = tool.category;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Open ${tool.name} tool`);
+
+    card.innerHTML = `
+      <div class="flex items-center gap-4 mb-4">
+        <div class="text-4xl">${tool.icon}</div>
+        <div>
+          <h3 class="font-bold text-xl group-hover:text-navy-900">${tool.name}</h3>
+          <p class="text-sm text-slate-400 group-hover:text-navy-800 mt-1">${tool.category.toUpperCase()}</p>
+        </div>
+      </div>
+      <p class="text-slate-400 group-hover:text-navy-700 leading-relaxed">${tool.description}</p>
+    `;
+
+    card.addEventListener('click', () => this.openTool(id));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') this.openTool(id);
+    });
+
+    return card;
+  }
+
+  async openTool(toolId) {
+    const tool = this.tools.get(toolId);
+    if (!tool) return;
+
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+    
+    modalContent.innerHTML = await tool.component();
+    modalOverlay.classList.remove('hidden');
+    modalOverlay.focus();
+
+    // Re-attach tool-specific event listeners
+    this.bindToolEvents(toolId);
+  }
+
+  bindEvents() {
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => this.filterTools(e.target.value));
+    
+    // Category Filter
+    document.getElementById('categoryFilter').addEventListener('change', (e) => this.filterTools('', e.target.value));
+
+    // Modal Close
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') this.closeModal();
+    });
+
+    // Keyboard close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.closeModal();
+    });
+  }
+
+  filterTools(searchTerm = '', category = '') {
+    const cards = document.querySelectorAll('#toolsGrid > [data-id]');
+    
+    cards.forEach(card => {
+      const toolName = card.querySelector('h3').textContent.toLowerCase();
+      const toolCategory = card.dataset.category;
+      
+      const matchesSearch = !searchTerm || toolName.includes(searchTerm.toLowerCase());
+      const matchesCategory = !category || toolCategory === category;
+      
+      card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+    });
+  }
+
+  closeModal() {
+    document.getElementById('modalOverlay').classList.add('hidden');
+  }
+
+  // Utility functions
+  showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.remove('hidden', 'translate-x-full');
+    setTimeout(() => toast.classList.add('translate-x-full'), 2000);
+  }
+
+  copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => this.showToast());
+  }
+
+  downloadFile(filename, content, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Tool Components (Simplified implementations)
+  async createPDFToWordTool() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">PDF to Word</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Upload PDF</label>
+            <input type="file" id="pdfInput" accept=".pdf" class="w-full p-4 bg-white/10 rounded-2xl border border-white/20">
+          </div>
+          <button id="convertBtn" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 px-8 py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            Convert to Word
+          </button>
+          <div id="result" class="hidden bg-white/5 p-6 rounded-2xl"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  createImageConverter() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">Image Converter</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="space-y-6">
+          <input type="file" id="imageInput" accept="image/*" class="w-full p-4 bg-white/10 rounded-2xl border border-white/20">
+          <select id="formatSelect" class="w-full p-4 bg-white/10 rounded-2xl border border-white/20">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+          <button id="convertImageBtn" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 px-8 py-4 rounded-2xl font-semibold">Convert Image</button>
+          <canvas id="previewCanvas" class="hidden w-full h-64 bg-white/10 rounded-2xl"></canvas>
+        </div>
+      </div>
+    `;
+  }
+
+  createQRGenerator() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">QR Code Generator</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="space-y-6">
+          <textarea id="qrText" placeholder="Enter text or URL..." class="w-full p-4 h-32 bg-white/10 rounded-2xl border border-white/20 resize-vertical"></textarea>
+          <div class="flex gap-4">
+            <button id="generateQR" class="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 px-6 py-4 rounded-2xl font-semibold">Generate QR</button>
+            <button id="downloadQR" class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 px-6 py-4 rounded-2xl font-semibold">Download</button>
+          </div>
+          <div id="qrContainer" class="flex justify-center p-8 bg-white/10 rounded-2xl min-h-64 items-center"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  createBMICalculator() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">BMI Calculator</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Weight (kg)</label>
+            <input type="number" id="weight" step="0.1" class="w-full p-4 bg-white/10 rounded-2xl border border-white/20">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Height (cm)</label>
+            <input type="number" id="height" step="0.1" class="w-full p-4 bg-white/10 rounded-2xl border border-white/20">
+          </div>
+        </div>
+        <button id="calcBMI" class="w-full mt-8 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 px-8 py-4 rounded-2xl font-semibold">Calculate BMI</button>
+        <div id="bmiResult" class="mt-8 p-6 rounded-2xl bg-white/10 hidden"></div>
+      </div>
+    `;
+  }
+
+  createWordCounter() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">Word Counter</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <textarea id="wordCounterText" placeholder="Paste your text here..." class="w-full h-64 p-6 bg-white/10 rounded-3xl border border-white/20 resize-vertical mb-6"></textarea>
+        <div id="wordStats" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center p-6 bg-white/5 rounded-2xl"></div>
+      </div>
+    `;
+  }
+
+  createPasswordGenerator() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">Password Generator</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="space-y-4 mb-8">
+          <div class="flex gap-4 items-center">
+            <label>Length:</label>
+            <input type="range" id="passLength" min="8" max="128" value="24" class="flex-1">
+            <span id="passLengthValue">24</span>
+          </div>
+          <div class="flex gap-4 flex-wrap">
+            <label><input type="checkbox" id="includeUppercase" checked> Uppercase</label>
+            <label><input type="checkbox" id="includeLowercase" checked> Lowercase</label>
+            <label><input type="checkbox" id="includeNumbers" checked> Numbers</label>
+            <label><input type="checkbox" id="includeSymbols" checked> Symbols</label>
+          </div>
+        </div>
+        <div class="flex gap-4 p-4 bg-white/10 rounded-2xl items-center">
+          <input type="text" id="generatedPassword" readonly class="flex-1 bg-transparent outline-none font-mono text-lg">
+          <button id="copyPassword" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold">Copy</button>
+          <button id="generatePassword" class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 rounded-xl font-semibold">Generate</button>
+        </div>
+        <div id="passwordStrength" class="mt-4 h-2 bg-white/20 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-red-500 to-green-500 transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  createJSONFormatter() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">JSON Formatter</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 h-96">
+          <div>
+            <label class="block text-sm font-medium mb-2">Input JSON</label>
+            <textarea id="jsonInput" placeholder='{"key": "value"}' class="w-full h-full p-4 bg-white/10 rounded-2xl border border-white/20 font-mono text-sm resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Formatted JSON</label>
+            <pre id="jsonOutput" class="w-full h-full p-4 bg-white/5 rounded-2xl border border-white/20 font-mono text-sm overflow-auto whitespace-pre-wrap text-green-400"></pre>
+          </div>
+        </div>
+        <div class="flex gap-4 mt-6">
+          <button id="formatJSON" class="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 px-6 py-3 rounded-2xl font-semibold">Format</button>
+          <button id="validateJSON" class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 px-6 py-3 rounded-2xl font-semibold">Validate</button>
+          <button id="copyFormatted" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 px-6 py-3 rounded-2xl font-semibold">Copy Formatted</button>
+        </div>
+      </div>
+    `;
+  }
+
+  createTextToSpeech() {
+    return `
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">Text to Speech</h2>
+          <button onclick="toolFactory.closeModal()" class="text-2xl hover:text-yellow-400">&times;</button>
+        </div>
+        <div class="space-y-6">
+          <textarea id="ttsText" placeholder="Type or paste text to speak..." class="w-full h-48 p-6 bg-white/10 rounded-3xl border border-white/20 resize-vertical"></textarea>
+          <div class="flex flex-wrap gap-4 items-center">
+            <select id="ttsVoice" class="p-4 bg-white/10 rounded-2xl border border-white/20">
+              <option value="default">Default Voice</option>
+            </select>
+            <select id="ttsRate" class="p-4 bg-white/10 rounded-2xl border border-white/20">
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
+            <button id="playTTS" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 rounded-2xl font-semibold shadow-lg hover:shadow-xl">🔊 Play</button>
+            <button id="stopTTS" class="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-2xl font-semibold shadow-lg hover:shadow-xl hidden">⏹️ Stop</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  bindToolEvents(toolId) {
+    switch(toolId) {
+      case 'pdf-to-word':
+        document.getElementById('convertBtn').addEventListener('click', () => this.handlePDFToWord());
+        break;
+      case 'image-converter':
+        document.getElementById('convertImageBtn').addEventListener('click', () => this.handleImageConvert());
+        break;
+      case 'qr-generator':
+        document.getElementById('generateQR').addEventListener('click', () => this.generateQR());
+        document.getElementById('downloadQR').addEventListener('click', () => this.downloadQR());
+        break;
+      case 'bmi-calculator':
+        document.getElementById('calcBMI').addEventListener('click', () => this.calculateBMI());
+        break;
+      case 'word-counter':
+        document.getElementById('wordCounterText').addEventListener('input', () => this.updateWordCount());
+        break;
+      case 'password-generator':
+        document.getElementById('generatePassword').addEventListener('click', () => this.generatePassword());
+        document.getElementById('copyPassword').addEventListener('click', () => this.copyPassword());
+        document.getElementById('passLength').addEventListener('input', (e) => {
+          document.getElementById('passLengthValue').textContent = e.target.value;
+          this.generatePassword();
+        });
+        break;
+      case 'json-formatter':
+        document.getElementById('formatJSON').addEventListener('click', () => this.formatJSON());
+        document.getElementById('copyFormatted').addEventListener('click', () => this.copyFormattedJSON());
+        break;
+      case 'text-to-speech':
+        document.getElementById('playTTS').addEventListener('click', () => this.playTTS());
+        document.getElementById('stopTTS').addEventListener('click', () => this.stopTTS());
+        break;
+    }
+  }
+
+  // Tool Handlers (implementations)
+  async handlePDFToWord() {
+    // Gemini AI integration would go here
+    alert('PDF to Word requires Gemini API key. Check console for implementation.');
+  }
+
+  async handleImageConvert() {
+    const fileInput = document.getElementById('imageInput');
+    const canvas = document.getElementById('previewCanvas');
+    if (!fileInput.files[0]) return;
+
+    const file = fileInput.files[0];
+    const img = new Image();
+    img.onload = () => {
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      canvas.classList.remove('hidden');
+    };
+    img.src = URL.createObjectURL(file);
+  }
+
+  async generateQR() {
+    const text = document.getElementById('qrText').value;
+    const container = document.getElementById('qrContainer');
+    container.innerHTML = '';
+    
+    if (text) {
+      QRCode.toCanvas(container, text, { width: 256, margin: 2 }, (err) => {
+        if (err) console.error(err);
+      });
+    }
+  }
+
+  async downloadQR() {
+    // Implementation for PNG download
+    const canvas = document.querySelector('#qrContainer canvas');
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = 'qrcode.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  }
+
+  calculateBMI() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value) / 100;
+    const resultDiv = document.getElementById('bmiResult');
+    
+    if (!weight || !height) return;
+    
+    const bmi = weight / (height * height);
+    const category = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    
+    resultDiv.innerHTML = `
+      <h3 class="text-2xl font-bold text-yellow-400 mb-4">Your BMI: ${bmi.toFixed(1)}</h3>
+      <div class="text-4xl">${category}</div>
+    `;
+    resultDiv.classList.remove('hidden');
+  }
+
+  updateWordCount() {
+    const text = document.getElementById('wordCounterText').value;
+    const words = text.trim().split(/\s+/).filter(w => w.length).length;
+    const chars = text.length;
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim()).length;
+    
+    document.getElementById('wordStats').innerHTML = `
+      <div><div class="text-2xl font-bold text-yellow-400">${words}</div><div class="text-sm text-slate-400">Words</div></div>
+      <div><div class="text-2xl font-bold text-yellow-400">${chars}</div><div class="text-sm text-slate-400">Characters</div></div>
+      <div><div class="text-2xl font-bold text-yellow-400">${sentences}</div><div class="text-sm text-slate-400">Sentences</div></div>
+      <div><div class="text-2xl font-bold text-yellow-400">${Math.round(words / 225)}</div><div class="text-sm text-slate-400">Min Read</div></div>
+    `;
+  }
+
+  generatePassword() {
+    const length = parseInt(document.getElementById('passLength').value);
+    const uppercase = document.getElementById('includeUppercase').checked;
+    const lowercase = document.getElementById('includeLowercase').checked;
+    const numbers = document.getElementById('includeNumbers').checked;
+    const symbols = document.getElementById('includeSymbols').checked;
+
+    const chars = '';
+    if (uppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (lowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
+    if (numbers) chars += '0123456789';
+    if (symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    document.getElementById('generatedPassword').value = password;
+    
+    // Update strength indicator
+    const strength = this.calculatePasswordStrength(password);
+    const strengthBar = document.querySelector('#passwordStrength > div');
+    strengthBar.style.width = `${strength * 100}%`;
+  }
+
+  copyPassword() {
+    const password = document.getElementById('generatedPassword').value;
+    this.copyToClipboard(password);
+  }
+
+  calculatePasswordStrength(password) {
+    let score = 0;
+    if (password.length > 12) score += 1;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
+    if (/[0-9]/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    return Math.min(score / 4, 1);
+  }
+
+  formatJSON() {
+    try {
+      const input = document.getElementById('jsonInput').value;
+      const parsed = JSON.parse(input);
+      document.getElementById('jsonOutput').textContent = JSON.stringify(parsed, null, 2);
+    } catch (e) {
+      alert('Invalid JSON');
+    }
+  }
+
+  copyFormattedJSON() {
+    const formatted = document.getElementById('jsonOutput').textContent;
+    this.copyToClipboard(formatted);
+  }
+
+  playTTS() {
+    const text = document.getElementById('ttsText').value;
+    if ('speechSynthesis' in window && text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = parseFloat(document.getElementById('ttsRate').value);
+      speechSynthesis.speak(utterance);
+      
+      document.getElementById('playTTS').classList.add('hidden');
+      document.getElementById('stopTTS').classList.remove('hidden');
+    }
+  }
+
+  stopTTS() {
+    speechSynthesis.cancel();
+    document.getElementById('playTTS').classList.remove('hidden');
+    document.getElementById('stopTTS').classList.add('hidden');
+  }
+}
+
+// Global instance
+const toolFactory = new ToolFactory();
+window.toolFactory = toolFactory;

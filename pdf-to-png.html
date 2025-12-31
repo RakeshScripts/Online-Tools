@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF & PNG Converter - PNG to PDF & PDF to PNG | You ❤️ PDF</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+.nav-link, .dropbtn {
+    background: none; border: none; font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; height: 40px; padding: 0 5px;
+}
+
+.dropdown { position: relative; }
+.dropdown::after { content: ""; position: absolute; bottom: -15px; left: 0; width: 100%; height: 20px; }
+
+.dropdown-content {
+    display: none; position: absolute; background-color: var(--white);
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+    top: 100%; left: 0; padding: 8px 0;
+}
+
+.dropdown-content a {
+    color: var(--text-main); padding: 10px 15px; text-decoration: none;
+    display: block; font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Converter UI --- */
+.container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.tool-card {
+    background: white; padding: 35px; border-radius: 24px;
+    border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.mode-selector {
+    display: flex; justify-content: center; gap: 30px; margin-bottom: 25px;
+    background: #f1f5f9; padding: 15px; border-radius: 15px;
+}
+
+.radio-option { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
+.radio-option input { width: 18px; height: 18px; accent-color: var(--primary); }
+
+.file-input-wrapper {
+    border: 2px dashed #cbd5e1; padding: 40px 20px;
+    text-align: center; border-radius: 15px; margin-bottom: 20px;
+    transition: 0.3s; background: #f8fafc;
+}
+
+.file-input-wrapper:hover { border-color: var(--primary); background: #f1f5f9; }
+
+input[type="file"] { margin-bottom: 10px; }
+
+.convert-btn {
+    width: 100%; padding: 16px; background: var(--primary); color: white;
+    border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: 0.3s;
+}
+
+.convert-btn:hover { background: var(--primary-hover); }
+
+/* Results */
+#previewArea { margin-top: 25px; text-align: center; }
+#previewArea img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+
+.download-link {
+    display: none; margin-top: 15px; text-decoration: none;
+    background: #1e293b; color: white; padding: 12px 25px;
+    border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+}
+
+/* --- Content Section --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div style="text-align:center; margin-bottom: 30px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800;">PDF & PNG Converter</h1>
+        <p style="color: var(--text-muted);">Lossless conversion between PDF documents and PNG images.</p>
+    </div>
+
+    <div class="tool-card">
+        <div class="mode-selector">
+            <label class="radio-option">
+                <input type="radio" name="mode" value="pdfToPng" checked onchange="updateUI()"> PDF to PNG
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="mode" value="pngToPdf" onchange="updateUI()"> PNG to PDF
+            </label>
+        </div>
+
+        <div class="file-input-wrapper">
+            <p id="instructionText" style="margin-bottom:10px; font-weight:600; font-size:0.9rem;">Upload your PDF file</p>
+            <input type="file" id="fileInput" accept=".pdf">
+        </div>
+
+        <button class="convert-btn" onclick="processConversion()">Convert to PNG</button>
+
+        <div id="previewArea">
+            <div id="previewContent"></div>
+            <a id="downloadBtn" class="download-link" href="#">⬇ Download Result</a>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>High-Quality PNG Conversion</h2>
+        <p>PNG (Portable Network Graphics) is preferred over JPG when you need <strong>lossless quality</strong> and support for transparent backgrounds. Our tool ensures that your document text remains crisp and clear during the conversion process.</p>
+        
+        <h3>Why use this converter?</h3>
+        <ul>
+            <li><strong>No Quality Loss:</strong> PNG ensures your images don't suffer from compression artifacts.</li>
+            <li><strong>Browser-Side Processing:</strong> Your files never leave your computer, keeping your sensitive data 100% secure.</li>
+            <li><strong>Completely Free:</strong> Unlimited conversions with no watermarks or registrations.</li>
+        </ul>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Accurate, private, and professional document tools.</p>
+</footer>
+
+<script>
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+function updateUI() {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const input = document.getElementById('fileInput');
+    const text = document.getElementById('instructionText');
+    const btn = document.querySelector('.convert-btn');
+    
+    document.getElementById('previewContent').innerHTML = "";
+    document.getElementById('downloadBtn').style.display = "none";
+    input.value = "";
+
+    if (mode === "pdfToPng") {
+        input.accept = ".pdf";
+        text.innerText = "Upload your PDF file";
+        btn.innerText = "Convert to PNG";
+    } else {
+        input.accept = "image/png";
+        text.innerText = "Upload your PNG image";
+        btn.innerText = "Convert to PDF";
+    }
+}
+
+async function processConversion() {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+    const preview = document.getElementById("previewContent");
+    const dlBtn = document.getElementById("downloadBtn");
+
+    if (!file) return alert("Please select a file first.");
+
+    if (mode === "pdfToPng") {
+        try {
+            const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+            const page = await pdf.getPage(1);
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const viewport = page.getViewport({ scale: 2 }); // Scale 2 for high quality
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            const imgURL = canvas.toDataURL("image/png");
+
+            preview.innerHTML = `<img src="${imgURL}" alt="Preview">`;
+            dlBtn.href = imgURL;
+            dlBtn.download = "converted-document.png";
+            dlBtn.style.display = "inline-block";
+        } catch (e) {
+            alert("Error processing PDF file.");
+        }
+    } else {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgData = e.target.result;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const img = new Image();
+            img.src = imgData;
+            img.onload = function() {
+                const width = doc.internal.pageSize.getWidth();
+                const height = (img.height * width) / img.width;
+                doc.addImage(imgData, 'PNG', 0, 0, width, height);
+                
+                const pdfBlob = doc.output('bloburl');
+                preview.innerHTML = `<p style="color:var(--primary); font-weight:700;">PNG converted to PDF successfully!</p>`;
+                dlBtn.href = pdfBlob;
+                dlBtn.download = "image-to-pdf.pdf";
+                dlBtn.style.display = "inline-block";
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+
+</body>
+</html>

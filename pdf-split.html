@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Split PDF Online - Extract Pages from PDF | You ❤️ PDF</title>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px;
+}
+
+/* --- Fixed Header & Improved Dropdown --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 60px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; gap: 15px; }
+
+.dropdown { position: relative; }
+
+.dropbtn {
+    background: none; border: none; font-family: inherit; font-weight: 600;
+    font-size: 0.9rem; color: var(--text-main); cursor: pointer; padding: 10px 5px;
+}
+
+/* FIX: The "Safe Bridge" - Added padding and adjusted top to prevent early hiding */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--white);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    top: 100%; /* Sits exactly at the bottom of the header */
+    left: 0;
+    padding-top: 5px; /* Subtle bridge */
+}
+
+.dropdown-content a {
+    color: var(--text-main);
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Tool UI --- */
+.container { max-width: 800px; width: 100%; margin: 40px auto; padding: 0 20px; }
+
+.info-box { text-align: center; margin-bottom: 32px; }
+.info-box h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.info-box p { color: var(--text-muted); font-size: 1.1rem; }
+
+.upload-box {
+    background: white; padding: 40px; border-radius: 24px;
+    border: 2px dashed #cbd5e1; text-align: center; margin-bottom: 24px;
+    cursor: pointer; transition: 0.3s;
+}
+.upload-box:hover { border-color: var(--primary); background: #fdfdff; }
+.upload-box .icon { font-size: 40px; margin-bottom: 10px; display: block; }
+
+.controls {
+    background: white; border: 1px solid #e2e8f0; border-radius: 18px;
+    padding: 24px; margin-bottom: 20px;
+}
+
+.controls label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-main); }
+.controls input {
+    width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px;
+    font-family: monospace; font-size: 15px; outline: none;
+}
+
+.merge-btn {
+    width: 100%; padding: 16px; border-radius: 14px; border: none;
+    font-size: 16px; font-weight: 700; background: var(--primary);
+    color: white; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+/* --- Content Sections --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+.faq-item { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; }
+.faq-item h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text-main); }
+	
+	.keyword-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .tag { background: #f1f5f9; color: var(--text-muted); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid #e2e8f0; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+
+@media (max-width: 768px) { nav ul { display: none; } }
+</style>
+</head>
+
+<body>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Split PDF Online - Extract Pages from PDF | You ❤️ PDF</title>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+/* --- Fixed Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; /* Fixed height for consistency */
+    display: flex;
+    align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+/* --- Fixed Menu Alignment --- */
+nav ul { 
+    list-style: none; 
+    display: flex; 
+    align-items: center; /* This aligns everything vertically in the center */
+    gap: 15px; 
+}
+
+/* Ensure both links and buttons look identical */
+.nav-link, .dropbtn {
+    background: none; 
+    border: none; 
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    cursor: pointer; 
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    height: 40px; /* Forces equal height */
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.nav-link:hover, .dropbtn:hover {
+    color: var(--primary);
+}
+
+.dropdown { position: relative; }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--white);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    top: 100%; 
+    left: 0;
+    padding: 8px 0;
+}
+
+/* The invisible bridge to prevent dropdown from hiding */
+.dropdown::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+}
+
+.dropdown-content a {
+    color: var(--text-main);
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Tool UI --- */
+.container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.info-box { text-align: center; margin-bottom: 32px; }
+.info-box h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.info-box p { color: var(--text-muted); font-size: 1.1rem; }
+
+.upload-box {
+    background: white; padding: 40px; border-radius: 24px;
+    border: 2px dashed #cbd5e1; text-align: center; margin-bottom: 24px;
+    cursor: pointer; transition: 0.3s;
+}
+.upload-box:hover { border-color: var(--primary); background: #fdfdff; }
+.upload-box .icon { font-size: 40px; margin-bottom: 10px; display: block; }
+
+.controls {
+    background: white; border: 1px solid #e2e8f0; border-radius: 18px;
+    padding: 24px; margin-bottom: 20px;
+}
+
+.controls label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-main); }
+.controls input {
+    width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px;
+    font-family: monospace; font-size: 15px; outline: none;
+}
+
+.merge-btn {
+    width: 100%; padding: 16px; border-radius: 14px; border: none;
+    font-size: 16px; font-weight: 700; background: var(--primary);
+    color: white; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+/* --- Content Sections --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+
+@media (max-width: 768px) { nav ul { display: none; } }
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div class="info-box">
+        <h1>Split PDF Pages</h1>
+        <p>Select a PDF and extract specific pages instantly. 100% Secure & Private.</p>
+    </div>
+
+    <div class="upload-box" id="uploadBox" onclick="fileInput.click()">
+        <div class="icon" id="fileIcon">✂️</div>
+        <div id="fileName"><b>Click to Select PDF File</b></div>
+        <div id="pageInfo" style="font-size:12px;color:var(--primary);margin-top:6px"></div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".pdf" hidden />
+
+    <div class="controls" id="controls" style="display:none;">
+        <label>Enter Page Range (e.g., 1-3, 5, 8-10)</label>
+        <input type="text" id="rangeInput" value="1" placeholder="Example: 1-5, 8, 11-15" />
+    </div>
+
+    <button class="merge-btn" id="splitBtn" disabled>✂️ Split & Download PDF</button>
+    <div class="status" id="status" style="margin-top:15px; text-align:center; font-weight:600;"></div>
+
+    <section class="content-section">
+        <h2>How to Extract Pages from PDF</h2>
+        <p>Our <strong>PDF Splitter</strong> tool allows you to isolate specific pages from a large document into a brand new PDF file. This is perfect for when you only need to share a small portion of a report or save a specific receipt from a multi-page document.</p>
+        
+        <h3>Secure Local Processing</h3>
+        <p>Safety is our top priority. Unlike traditional online tools, your files are never uploaded to a cloud server. Everything happens directly in your browser using the <strong>pdf-lib</strong> library. Your data remains on your machine, making this tool safe for sensitive financial and legal documents.</p>
+    </section>
+
+    <section class="content-section">
+        <h2>Frequently Asked Questions</h2>
+        <div style="margin-bottom:15px;">
+            <h3 style="font-size:1.1rem; color:var(--text-main);">How do I use ranges?</h3>
+            <p style="color:var(--text-muted);">To extract multiple pages, separate them with commas. For example, typing <code>1, 3, 5-7</code> will give you pages 1, 3, 5, 6, and 7.</p>
+        </div>
+        <div>
+            <h3 style="font-size:1.1rem; color:var(--text-main);">Is there a limit to how many pages I can split?</h3>
+            <p style="color:var(--text-muted);">No. Our tool is completely free with no limits on the number of pages or file size, provided your computer has enough memory to process the file.</p>
+			
+			<div class="keyword-box">
+    <span class="tag">Split PDF</span>
+    <span class="tag">Extract PDF Pages</span>
+    <span class="tag">PDF Page Separator</span>
+    <span class="tag">Divide PDF Online</span>
+    <span class="tag">Secure PDF Splitter</span>
+    <span class="tag">Break PDF into Pages</span>
+    <span class="tag">No-Upload PDF Tool</span>
+    <span class="tag">PDF Range Extractor</span>
+    <span class="tag">Split PDF Locally</span>
+    <span class="tag">Fast PDF Divider</span>
+</div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Built for Speed and Privacy.</p>
+</footer>
+
+<script>
+/* JAVASCRIPT LOGIC */
+const fileInput = document.getElementById("fileInput");
+const uploadBox = document.getElementById("uploadBox");
+const fileNameEl = document.getElementById("fileName");
+const pageInfoEl = document.getElementById("pageInfo");
+const controls = document.getElementById("controls");
+const rangeInput = document.getElementById("rangeInput");
+const splitBtn = document.getElementById("splitBtn");
+const statusText = document.getElementById("status");
+
+let pdfFile = null;
+let pageCount = 0;
+
+fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+        pageCount = pdf.getPageCount();
+        pdfFile = file;
+
+        uploadBox.style.borderColor = "var(--primary)";
+        fileNameEl.innerHTML = `<b>${file.name}</b>`;
+        pageInfoEl.textContent = `${pageCount} pages detected`;
+        controls.style.display = "block";
+        splitBtn.disabled = false;
+        statusText.textContent = "";
+    } catch (err) {
+        alert("Could not load PDF. It might be encrypted or corrupted.");
+    }
+});
+
+splitBtn.addEventListener("click", async () => {
+    if (!pdfFile) return;
+    try {
+        splitBtn.disabled = true;
+        statusText.textContent = "Processing... Please wait.";
+        const bytes = await pdfFile.arrayBuffer();
+        const srcPdf = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+        const newPdf = await PDFLib.PDFDocument.create();
+
+        const ranges = rangeInput.value.split(",").map(r => r.trim());
+        const pageIndexes = [];
+
+        ranges.forEach(r => {
+            if (r.includes("-")) {
+                const parts = r.split("-").map(Number);
+                for (let i = parts[0]; i <= parts[1]; i++) {
+                    if (i > 0 && i <= pageCount) pageIndexes.push(i - 1);
+                }
+            } else {
+                const p = parseInt(r);
+                if (p > 0 && p <= pageCount) pageIndexes.push(p - 1);
+            }
+        });
+
+        const pages = await newPdf.copyPages(srcPdf, pageIndexes);
+        pages.forEach(p => newPdf.addPage(p));
+        const outBytes = await newPdf.save();
+        const blob = new Blob([outBytes], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `split_${pdfFile.name}`;
+        a.click();
+
+        statusText.textContent = "✅ Success! File downloaded.";
+        statusText.style.color = "#10b981";
+    } catch (err) {
+        statusText.textContent = "❌ Error: Invalid page range.";
+        statusText.style.color = "#ef4444";
+    } finally {
+        splitBtn.disabled = false;
+    }
+});
+</script>
+
+</body>
+</html>

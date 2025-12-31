@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Online Unit Converter - Length, Weight & Temperature | You ❤️ PDF</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+.nav-link, .dropbtn {
+    background: none; border: none; font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; height: 40px; padding: 0 5px;
+}
+
+.dropdown { position: relative; }
+.dropdown::after { content: ""; position: absolute; bottom: -15px; left: 0; width: 100%; height: 20px; }
+
+.dropdown-content {
+    display: none; position: absolute; background-color: var(--white);
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+    top: 100%; left: 0; padding: 8px 0;
+}
+
+.dropdown-content a {
+    color: var(--text-main); padding: 10px 15px; text-decoration: none;
+    display: block; font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Unit Converter UI --- */
+.container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.tool-card {
+    background: white; padding: 35px; border-radius: 24px;
+    border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+/* Tabs Styling */
+.tabs {
+    display: flex; gap: 8px; background: #f1f5f9;
+    padding: 6px; border-radius: 16px; margin-bottom: 25px;
+}
+
+.tabs button {
+    flex: 1; padding: 12px; border-radius: 12px; border: none;
+    background: transparent; color: var(--text-muted);
+    font-weight: 700; cursor: pointer; transition: 0.3s;
+    text-transform: capitalize; font-size: 0.9rem;
+}
+
+.tabs button.active {
+    background: var(--white); color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Inputs & Selects */
+input[type="number"] {
+    width: 100%; padding: 16px; font-size: 1.8rem; font-weight: 700;
+    border-radius: 14px; border: 2px solid #f1f5f9; background: #f8fafc;
+    color: var(--text-main); outline: none; margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+input[type="number"]:focus { border-color: var(--primary); background: white; }
+
+.select-row { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
+
+select {
+    flex: 1; padding: 12px; border-radius: 12px; background: #f1f5f9;
+    border: 1px solid #e2e8f0; color: var(--text-main); outline: none;
+    font-weight: 600; cursor: pointer;
+}
+
+.arrow { color: var(--primary); font-size: 1.2rem; font-weight: 800; }
+
+/* Result Box */
+.result-box {
+    background: #f1f5f9; border: 1px dashed var(--primary);
+    border-radius: 20px; padding: 30px; text-align: center;
+}
+
+.result-label {
+    font-size: 0.75rem; color: var(--text-muted); font-weight: 700;
+    letter-spacing: 1.5px; margin-bottom: 8px; text-transform: uppercase;
+}
+
+.result-value {
+    font-size: 2.5rem; font-weight: 800; color: var(--primary);
+    word-break: break-all;
+}
+
+.result-unit { font-size: 1.1rem; color: var(--text-muted); margin-left: 8px; }
+
+/* --- Content Section --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+
+@media (max-width: 600px) {
+    .result-value { font-size: 1.8rem; }
+    nav ul { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div style="text-align:center; margin-bottom: 30px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800;">Fast Unit Converter</h1>
+        <p style="color: var(--text-muted);">Switch between length, weight, and temperature instantly.</p>
+    </div>
+
+    <div class="tool-card">
+        <div class="tabs">
+            <button id="tab-length" class="active" onclick="switchType('length')">length</button>
+            <button id="tab-weight" onclick="switchType('weight')">weight</button>
+            <button id="tab-temp" onclick="switchType('temp')">temp</button>
+        </div>
+
+        <input type="number" id="value" value="1" />
+
+        <div class="select-row">
+            <select id="from"></select>
+            <span class="arrow">→</span>
+            <select id="to"></select>
+        </div>
+
+        <div class="result-box">
+            <div class="result-label">Converted Value</div>
+            <div class="result-value">
+                <span id="resultValue">0</span><span class="result-unit" id="resultUnit"></span>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>Why Use This Unit Converter?</h2>
+        <p>In a globalized world, switching between the <strong>Metric System</strong> and the <strong>Imperial System</strong> is a daily necessity. Whether you are following a recipe from another country, calculating shipping weights, or converting Celsius to Fahrenheit for travel, accuracy is key.</p>
+        
+        <h3>Universal Conversions</h3>
+        <ul>
+            <li><strong>Length:</strong> Convert Meters to Feet, Kilometers to Miles, and more instantly.</li>
+            <li><strong>Weight:</strong> Easily switch between Kilograms, Grams, Pounds, and Ounces.</li>
+            <li><strong>Temperature:</strong> Accurate transitions between Celsius, Fahrenheit, and Kelvin for scientific or daily use.</li>
+        </ul>
+        <p>Our tool is designed for speed and privacy. No data is sent to a server; all math happens directly in your browser.</p>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Accurate and instant unit conversions.</p>
+</footer>
+
+<script>
+let currentType = "length";
+
+const units = {
+  length: {
+    meters: 1,
+    kilometers: 0.001,
+    miles: 0.000621371,
+    feet: 3.28084,
+    inches: 39.3701,
+    centimeters: 100
+  },
+  weight: {
+    kilograms: 1,
+    grams: 1000,
+    pounds: 2.20462,
+    ounces: 35.274,
+    milligrams: 1000000
+  },
+  temp: {
+    celsius: "C",
+    fahrenheit: "F",
+    kelvin: "K"
+  }
+};
+
+const valueInput = document.getElementById("value");
+const fromSelect = document.getElementById("from");
+const toSelect = document.getElementById("to");
+const resultValueEl = document.getElementById("resultValue");
+const resultUnitEl = document.getElementById("resultUnit");
+
+function switchType(newType) {
+  currentType = newType;
+
+  document.querySelectorAll(".tabs button").forEach(btn =>
+    btn.classList.remove("active")
+  );
+  document.getElementById(`tab-${newType}`).classList.add("active");
+
+  populateUnits();
+  calculate();
+}
+
+function populateUnits() {
+  fromSelect.innerHTML = "";
+  toSelect.innerHTML = "";
+
+  const keys = Object.keys(units[currentType]);
+
+  keys.forEach((u) => {
+    fromSelect.innerHTML += `<option value="${u}">${u}</option>`;
+    toSelect.innerHTML += `<option value="${u}">${u}</option>`;
+  });
+
+  fromSelect.value = keys[0];
+  toSelect.value = keys[1] || keys[0];
+}
+
+function calculate() {
+  const val = parseFloat(valueInput.value);
+  if (isNaN(val)) {
+    resultValueEl.textContent = "0";
+    return;
+  }
+
+  let result = 0;
+
+  if (currentType === "temp") {
+    let c = val;
+    if (fromSelect.value === "fahrenheit") c = (val - 32) * 5 / 9;
+    if (fromSelect.value === "kelvin") c = val - 273.15;
+
+    if (toSelect.value === "celsius") result = c;
+    if (toSelect.value === "fahrenheit") result = (c * 9 / 5) + 32;
+    if (toSelect.value === "kelvin") result = c + 273.15;
+  } else {
+    const ratio = units[currentType][toSelect.value] / units[currentType][fromSelect.value];
+    result = val * ratio;
+  }
+
+  resultValueEl.textContent = result.toLocaleString(undefined, { maximumFractionDigits: 4 });
+  resultUnitEl.textContent = " " + toSelect.value;
+}
+
+valueInput.addEventListener("input", calculate);
+fromSelect.addEventListener("change", calculate);
+toSelect.addEventListener("change", calculate);
+
+// Initial Setup
+populateUnits();
+calculate();
+</script>
+
+</body>
+</html>

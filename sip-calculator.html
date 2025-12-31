@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SIP Calculator Online - Monthly Mutual Fund Return Estimator | You ❤️ PDF</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+.nav-link, .dropbtn {
+    background: none; border: none; font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; height: 40px; padding: 0 5px;
+}
+
+.dropdown { position: relative; }
+.dropdown::after { content: ""; position: absolute; bottom: -15px; left: 0; width: 100%; height: 20px; }
+
+.dropdown-content {
+    display: none; position: absolute; background-color: var(--white);
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+    top: 100%; left: 0; padding: 8px 0;
+}
+
+.dropdown-content a {
+    color: var(--text-main); padding: 10px 15px; text-decoration: none;
+    display: block; font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- SIP Calculator UI --- */
+.container { max-width: 900px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.calculator-card {
+    background: white; padding: 35px; border-radius: 24px;
+    border: 1px solid #e2e8f0; margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+}
+
+.input-group { margin-bottom: 25px; }
+.input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+.input-group input {
+    width: 100%; padding: 12px; border: 2px solid #f1f5f9;
+    border-radius: 10px; font-size: 1rem; outline: none; background: #f8fafc;
+}
+.input-group input:focus { border-color: var(--primary); background: white; }
+
+.results-panel {
+    background: #f1f5f9; padding: 30px; border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center;
+}
+
+.result-item { margin-bottom: 20px; }
+.result-item span { display: block; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.result-item strong { font-size: 1.6rem; color: var(--text-main); }
+.result-item.highlight strong { color: var(--primary); font-size: 2.2rem; }
+
+/* --- SEO & FAQ --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .calculator-card { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div style="text-align:center; margin-bottom: 30px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800;">SIP Calculator (India)</h1>
+        <p style="color: var(--text-muted);">Calculate the wealth gained through Monthly Mutual Fund investments.</p>
+    </div>
+
+    <div class="calculator-card">
+        <div class="inputs">
+            <div class="input-group">
+                <label>Monthly Investment Amount (₹)</label>
+                <input type="number" id="monthlyInv" value="5000" oninput="calculateSIP()" />
+            </div>
+            <div class="input-group">
+                <label>Expected Annual Return Rate (%)</label>
+                <input type="number" id="returnRate" value="12" oninput="calculateSIP()" />
+            </div>
+            <div class="input-group">
+                <label>Time Period (Years)</label>
+                <input type="number" id="years" value="10" oninput="calculateSIP()" />
+            </div>
+        </div>
+
+        <div class="results-panel">
+            <div class="result-item">
+                <span>Total Invested</span>
+                <strong id="totalInvested">₹0</strong>
+            </div>
+            <div class="result-item">
+                <span>Estimated Wealth Gain</span>
+                <strong id="estReturns">₹0</strong>
+            </div>
+            <div class="result-item highlight">
+                <span>Total Maturity Value</span>
+                <strong id="totalValue">₹0</strong>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>How a SIP Calculator Helps You Plan Finances</h2>
+        <p>A <strong>SIP (Systematic Investment Plan) calculator</strong> is an essential tool for Indian investors looking to grow their wealth through Mutual Funds. Instead of timing the market, a SIP allows you to invest a fixed amount regularly, which helps in averaging out the cost of purchase through <strong>Rupee Cost Averaging</strong>.</p>
+        
+        <p>This calculator uses the compound interest formula to show how small monthly savings can turn into a massive corpus over 10, 20, or 30 years. For example, a monthly SIP of just ₹5,000 at a 12% return rate can grow significantly due to the <strong>power of compounding</strong>.</p>
+
+        <h3>Key Features of SIP</h3>
+        <ul>
+            <li><strong>Low Entry Barrier:</strong> You can start investing with as little as ₹500 per month.</li>
+            <li><strong>Compound Interest:</strong> Each month’s return is reinvested, leading to exponential growth.</li>
+            <li><strong>Financial Discipline:</strong> Helps in achieving long-term goals like retirement or children's education.</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Frequently Asked Questions (FAQ)</h2>
+        <div style="margin-bottom:20px;">
+            <h3 style="font-size:1.1rem; margin-bottom:5px;">Is SIP better than a Lump Sum?</h3>
+            <p>SIP is generally safer for retail investors as it reduces the risk of market volatility by spreading investments over time. It is ideal for salaried individuals.</p>
+        </div>
+        <div>
+            <h3 style="font-size:1.1rem; margin-bottom:5px;">What is a realistic return rate for SIP in India?</h3>
+            <p>While past performance doesn't guarantee future results, Equity Mutual Funds in India have historically provided returns between 12% to 15% over the long term (7+ years).</p>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Accurate Indian Mutual Fund Planning.</p>
+</footer>
+
+<script>
+// Function to format numbers in Indian Currency Style (Lakh/Crore)
+function formatIndianCurrency(num) {
+    const x = Math.round(num).toString();
+    let lastThree = x.substring(x.length - 3);
+    const otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers !== '') {
+        lastThree = ',' + lastThree;
+    }
+    const res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    return "₹" + res;
+}
+
+function calculateSIP() {
+    const P = parseFloat(document.getElementById('monthlyInv').value);
+    const r = parseFloat(document.getElementById('returnRate').value) / 12 / 100;
+    const n = parseFloat(document.getElementById('years').value) * 12;
+
+    if (isNaN(P) || isNaN(r) || isNaN(n) || P <= 0) return;
+
+    // Formula: M = P × ({[1 + r]^n - 1} / r) × (1 + r)
+    const totalValue = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+    const investedAmount = P * n;
+    const returnsValue = totalValue - investedAmount;
+
+    document.getElementById('totalInvested').textContent = formatIndianCurrency(investedAmount);
+    document.getElementById('estReturns').textContent = formatIndianCurrency(returnsValue);
+    document.getElementById('totalValue').textContent = formatIndianCurrency(totalValue);
+}
+
+// Initial calculation
+calculateSIP();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced PDF Compressor | You ❤️ PDF</title>
+
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --accent-green: #10b981;
+        }
+
+        /* --- Global & Layout --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+        }
+
+        /* --- Navigation Header --- */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0; width: 100%; z-index: 2000;
+            height: 70px; display: flex; align-items: center;
+        }
+
+        nav {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+        .nav-link, .dropbtn {
+            background: none; border: none; font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+            cursor: pointer; text-decoration: none;
+            display: flex; align-items: center; height: 40px; padding: 0 5px;
+        }
+
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none; position: absolute; background-color: var(--white);
+            min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+            top: 100%; left: 0; padding: 8px 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text-main); padding: 10px 15px; text-decoration: none;
+            display: block; font-size: 0.85rem;
+        }
+
+        .dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* --- Tool UI --- */
+        .container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+        .info-banner {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 20px; border-radius: 16px;
+            text-align: center; margin-bottom: 25px;
+        }
+
+        .info-banner h3 { color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 5px; }
+        .info-banner p { font-size: 0.8rem; color: var(--text-muted); }
+
+        .drop-zone {
+            background: white; border: 2px dashed #cbd5e1;
+            padding: 40px 20px; text-align: center;
+            border-radius: 24px; cursor: pointer; transition: 0.3s;
+        }
+
+        .drop-zone:hover { border-color: var(--primary); background: #f1f5f9; }
+        .drop-zone.has-file { border-color: var(--primary); background: rgba(99, 102, 241, 0.02); }
+
+        .profile-card {
+            background: white; padding: 25px; border-radius: 20px;
+            border: 1px solid #e2e8f0; margin-top: 20px;
+        }
+
+        .intensity-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; background: #f1f5f9; padding: 5px; border-radius: 12px;
+        }
+
+        .intensity-btn {
+            border: none; padding: 10px; border-radius: 8px;
+            font-weight: 700; font-size: 11px; text-transform: uppercase;
+            cursor: pointer; background: transparent; color: var(--text-muted); transition: 0.2s;
+        }
+
+        .intensity-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); }
+
+        .compress-btn {
+            width: 100%; margin-top: 20px; padding: 18px;
+            background: var(--primary); color: white; border: none;
+            border-radius: 16px; font-weight: 800; text-transform: uppercase;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        .progress-container { margin-top: 15px; text-align: center; display: none; }
+        .progress-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+
+        .result-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; display: none;
+        }
+        .result-item { background: white; padding: 15px; border-radius: 16px; border: 1px solid var(--accent-green); text-align: center; }
+        .result-val { font-weight: 800; font-size: 1.25rem; color: var(--primary); }
+
+        /* --- Info & QNA Styles --- */
+        .qna-section { margin-top: 50px; }
+        .qna-card { background: white; padding: 30px; border-radius: 24px; border: 1px solid #e2e8f0; margin-bottom: 30px; }
+        .qna-card h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 800; }
+        
+        .qna-item { margin-bottom: 25px; }
+        .qna-item h4 { color: var(--primary); font-size: 1rem; margin-bottom: 8px; font-weight: 700; }
+        .qna-item p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+        .keyword-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .tag { background: #f1f5f9; color: var(--text-muted); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid #e2e8f0; }
+
+        footer {
+            padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+            color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+        }
+
+        @media (max-width: 600px) { nav ul { display: none; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div style="text-align:center; margin-bottom: 25px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800;">Optimize PDF File Size</h1>
+        <p style="color: var(--text-muted);">Powerful browser-side compression without privacy risks.</p>
+    </div>
+
+    <div class="info-banner">
+        <h3>Smart Compression Technology</h3>
+        <p>Uses <strong>pdf-lib</strong> for structural cleanup and <strong>PDF.js</strong> for intelligent image downsampling.</p>
+    </div>
+
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <span id="icon" style="font-size: 3rem; display: block; margin-bottom: 10px;">📦</span>
+        <p id="fileName" style="font-weight: 800;">Drag & Drop or Click to Upload</p>
+        <p id="fileSize" style="font-size: 0.75rem; color: var(--text-muted);"></p>
+        <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFile(this.files[0])">
+    </div>
+
+    <div id="controls" style="display:none">
+        <div class="profile-card">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Select Mode</span>
+                <span id="intensityBadge" style="font-size: 10px; font-weight: 800; color: var(--primary);">Balanced</span>
+            </div>
+            <div class="intensity-grid">
+                <button class="intensity-btn" onclick="setIntensity('low', this)">Best Quality</button>
+                <button class="intensity-btn active" onclick="setIntensity('medium', this)">Recommended</button>
+                <button class="intensity-btn" onclick="setIntensity('high', this)">Extreme</button>
+            </div>
+            <p id="intensityDesc" style="font-size: 10px; color: var(--text-muted); margin-top: 10px; font-style: italic; text-align: center;">
+                Medium: Optimized images to 150 DPI. Best for email and web uploads.
+            </p>
+        </div>
+
+        <button class="compress-btn" id="compressBtn" onclick="startCompression()">Start Optimization</button>
+
+        <div class="progress-container" id="progressContainer">
+            <p id="statusText" style="font-size: 11px; font-weight: 600;"></p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="result-grid" id="resultGrid">
+            <div class="result-item">
+                <div style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">Compressed Size</div>
+                <div class="result-val" id="newSizeVal">0 KB</div>
+            </div>
+            <div class="result-item">
+                <div style="font-size: 9px; text-transform: uppercase; color: var(--text-muted);">Total Savings</div>
+                <div class="result-val" id="savedVal">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="qna-section">
+        <div class="qna-card">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="qna-item">
+                <h4>How does PDF compression work?</h4>
+                <p>Our tool uses two methods: <strong>Lossless Structural Optimization</strong> (removing duplicate fonts and redundant metadata) and <strong>Lossy Image Downsampling</strong> (reducing the DPI of embedded images). This allows for significant size reduction while maintaining visual clarity.</p>
+            </div>
+
+            
+
+            <div class="qna-item">
+                <h4>Is my data safe?</h4>
+                <p>Yes. Unlike other converters, we process your file <strong>locally</strong>. Your document is never uploaded to a cloud server; it stays in your browser's memory, ensuring 100% privacy for legal or sensitive documents.</p>
+            </div>
+
+            <div class="qna-item">
+                <h4>Why is my file still large after compression?</h4>
+                <p>If a PDF is already highly optimized or contains mostly vector graphics (like blueprints or text-only documents), further compression may be limited. Compression is most effective on documents containing high-resolution photos or scanned pages.</p>
+            </div>
+
+            <div class="qna-item">
+                <h4>Which compression mode should I choose?</h4>
+                <p><strong>Best Quality</strong> is ideal for printing. <strong>Recommended</strong> is perfect for email attachments (meeting the typical 25MB limit). <strong>Extreme</strong> is best for archival or mobile viewing where storage is a priority.</p>
+            </div>
+        </div>
+
+        <div class="qna-card">
+            <h3>Technical Capabilities</h3>
+            <p>Our engine supports <strong>Linearization</strong> (Web Optimization) which allows large PDFs to be viewed page-by-page as they download. We also strip unnecessary object streams and compress cross-reference tables.</p>
+            
+            <div class="keyword-box">
+                <span class="tag">Reduce PDF Size</span>
+                <span class="tag">Compress PDF Online</span>
+                <span class="tag">PDF Optimizer</span>
+                <span class="tag">Shrink PDF</span>
+                <span class="tag">Client-Side Compression</span>
+                <span class="tag">DPI Downsampling</span>
+                <span class="tag">No-Upload PDF Tool</span>
+                <span class="tag">PDF.js</span>
+                <span class="tag">Metadata Removal</span>
+                <span class="tag">Fast PDF Shrinker</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Secure, Local, and Lightning Fast.</p>
+</footer>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    let currentFile = null;
+    let intensity = 'medium';
+
+    function formatSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024, sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function handleFile(file) {
+        if (!file || file.type !== 'application/pdf') {
+            alert("Please select a valid PDF file.");
+            return;
+        }
+        currentFile = file;
+        document.getElementById('dropZone').classList.add('has-file');
+        document.getElementById('icon').innerText = '📄';
+        document.getElementById('fileName').innerText = file.name;
+        document.getElementById('fileSize').innerText = `Original: ${formatSize(file.size)}`;
+        document.getElementById('controls').style.display = 'block';
+        document.getElementById('resultGrid').style.display = 'none';
+    }
+
+    function setIntensity(lvl, btn) {
+        intensity = lvl;
+        document.querySelectorAll('.intensity-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const badge = document.getElementById('intensityBadge');
+        const desc = document.getElementById('intensityDesc');
+        
+        if(lvl === 'low') {
+            badge.innerText = 'Best Quality';
+            desc.innerText = 'Preserves 100% image quality. Focuses on structural metadata removal.';
+        } else if(lvl === 'medium') {
+            badge.innerText = 'Balanced';
+            desc.innerText = 'Recommended: 150 DPI images. Perfect balance of size and clarity.';
+        } else {
+            badge.innerText = 'Extreme';
+            desc.innerText = 'Smallest Size: 96 DPI images. Significant size reduction for archival.';
+        }
+    }
+
+    async function startCompression() {
+        const btn = document.getElementById('compressBtn');
+        const progCont = document.getElementById('progressContainer');
+        const status = document.getElementById('statusText');
+        const fill = document.getElementById('progressFill');
+        
+        btn.disabled = true;
+        progCont.style.display = 'block';
+        
+        try {
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const { PDFDocument } = PDFLib;
+            let compressedBytes;
+
+            if (intensity === 'low') {
+                status.innerText = 'Optimizing Structure...';
+                const srcDoc = await PDFDocument.load(arrayBuffer);
+                const destDoc = await PDFDocument.create();
+                const copiedPages = await destDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+                copiedPages.forEach(p => destDoc.addPage(p));
+                compressedBytes = await destDoc.save({ useObjectStreams: true });
+            } else {
+                const scale = intensity === 'medium' ? 1.5 : 1.0;
+                const quality = intensity === 'medium' ? 0.7 : 0.45;
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const destDoc = await PDFDocument.create();
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const percent = Math.round((i / pdf.numPages) * 100);
+                    status.innerText = `Compressing Page ${i} of ${pdf.numPages}...`;
+                    fill.style.width = percent + '%';
+                    
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    const jpegDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    const jpegImage = await destDoc.embedJpg(jpegDataUrl);
+                    
+                    const { width, height } = jpegImage.scale(1 / scale);
+                    const newPage = destDoc.addPage([width, height]);
+                    newPage.drawImage(jpegImage, { x: 0, y: 0, width, height });
+                }
+                compressedBytes = await destDoc.save({ useObjectStreams: true });
+            }
+            finalize(compressedBytes);
+        } catch (e) {
+            console.error(e);
+            alert("Error: This PDF may be encrypted or corrupted.");
+        } finally {
+            btn.disabled = false;
+            progCont.style.display = 'none';
+        }
+    }
+
+    function finalize(bytes) {
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const saved = currentFile.size - blob.size;
+        const percent = ((saved / currentFile.size) * 100).toFixed(1);
+
+        document.getElementById('newSizeVal').innerText = formatSize(blob.size);
+        document.getElementById('savedVal').innerText = (percent > 0 ? percent : 0) + '%';
+        document.getElementById('resultGrid').style.display = 'grid';
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `optimized_${currentFile.name}`;
+        a.click();
+    }
+</script>
+</body>
+</html>

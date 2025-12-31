@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QR Code Generator - Create Custom QR Codes | You ❤️ PDF</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+.nav-link, .dropbtn {
+    background: none; border: none; font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; height: 40px; padding: 0 5px;
+}
+
+.dropdown { position: relative; }
+.dropdown::after { content: ""; position: absolute; bottom: -15px; left: 0; width: 100%; height: 20px; }
+
+.dropdown-content {
+    display: none; position: absolute; background-color: var(--white);
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+    top: 100%; left: 0; padding: 8px 0;
+}
+
+.dropdown-content a {
+    color: var(--text-main); padding: 10px 15px; text-decoration: none;
+    display: block; font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Tool UI --- */
+.container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.tool-card {
+    background: white; padding: 35px; border-radius: 24px;
+    border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+
+input, select {
+    width: 100%; padding: 14px; border-radius: 12px;
+    border: 2px solid #f1f5f9; background: #f8fafc;
+    font-size: 1rem; color: var(--text-main); outline: none; transition: 0.3s;
+}
+
+input:focus, select:focus { border-color: var(--primary); background: white; }
+
+.gen-btn {
+    width: 100%; padding: 16px; border-radius: 14px; border: none;
+    background: var(--primary); color: white; font-size: 1rem;
+    font-weight: 700; cursor: pointer; transition: 0.3s;
+}
+
+.gen-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+.qr-box {
+    margin-top: 30px; text-align: center; padding: 25px;
+    border-radius: 20px; background: #f8fafc;
+    border: 1px dashed #cbd5e1; display: none;
+}
+
+#qrcode {
+    background: white; padding: 15px; border-radius: 10px;
+    display: inline-block; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.download-btn {
+    background: #1e293b; color: white; padding: 12px 25px;
+    border-radius: 10px; border: none; font-weight: 600; cursor: pointer;
+}
+
+/* --- Content Section --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+footer {
+    padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0;
+    color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+}
+
+@media (max-width: 600px) { nav ul { display: none; } }
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div style="text-align:center; margin-bottom: 30px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800;">Free QR Code Generator</h1>
+        <p style="color: var(--text-muted);">Create high-quality QR codes for personal or business use.</p>
+    </div>
+
+    <div class="tool-card">
+        <div class="input-group">
+            <label>Select Content Type</label>
+            <select id="type">
+                <option value="text">Website URL / Text</option>
+                <option value="phone">Phone Number</option>
+                <option value="email">Email Address</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label id="inputLabel">Enter URL or Text</label>
+            <input type="text" id="textInput" placeholder="https://example.com" />
+        </div>
+
+        <button class="gen-btn" onclick="generateQR()">Generate QR Code</button>
+
+        <div class="qr-box" id="qrBox">
+            <div id="qrcode"></div>
+            <div>
+                <button class="download-btn" onclick="downloadQR()">Download Image (PNG)</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>How to Generate a QR Code?</h2>
+        <p>A <strong>QR Code (Quick Response Code)</strong> is a type of barcode that can be scanned by smartphones to quickly access information. Our free generator allows you to create codes for various purposes instantly.</p>
+        
+        <h3>Supported QR Types</h3>
+        <ul>
+            <li><strong>URLs:</strong> Send users to your website, social media profile, or online menu.</li>
+            <li><strong>Contact:</strong> Create codes for phone numbers or email addresses to make it easy for clients to reach you.</li>
+            <li><strong>Plain Text:</strong> Encode simple messages or passwords.</li>
+        </ul>
+        
+        <h3>Why use our generator?</h3>
+        <p>Unlike many other services, our <strong>QR Generator</strong> is completely free, never expires, and works entirely in your browser. This means your data is private and the codes are generated with High Error Correction (Level H), making them easier to scan even if the code is slightly damaged or printed poorly.</p>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Unlimited QR code generation with no signup.</p>
+</footer>
+
+<script>
+let qr;
+
+// Update label based on selection
+document.getElementById('type').addEventListener('change', function() {
+    const label = document.getElementById('inputLabel');
+    const input = document.getElementById('textInput');
+    if (this.value === 'phone') {
+        label.innerText = 'Enter Phone Number';
+        input.placeholder = '+91 9876543210';
+    } else if (this.value === 'email') {
+        label.innerText = 'Enter Email Address';
+        input.placeholder = 'hello@example.com';
+    } else {
+        label.innerText = 'Enter URL or Text';
+        input.placeholder = 'https://example.com';
+    }
+});
+
+function generateQR() {
+    const val = document.getElementById("textInput").value.trim();
+    const type = document.getElementById("type").value;
+    const qrBox = document.getElementById("qrBox");
+    const qrContainer = document.getElementById("qrcode");
+
+    if (!val) {
+        alert("Please enter some text or a link.");
+        return;
+    }
+
+    let finalText = val;
+    if (type === "phone") finalText = `tel:${val}`;
+    if (type === "email") finalText = `mailto:${val}`;
+
+    qrContainer.innerHTML = "";
+    qr = new QRCode(qrContainer, {
+        text: finalText,
+        width: 200,
+        height: 200,
+        colorDark: "#1e293b",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    qrBox.style.display = "block";
+}
+
+function downloadQR() {
+    const img = document.querySelector("#qrcode img");
+    if (!img) return;
+
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "digital-tools-hub-qr.png";
+    link.click();
+}
+</script>
+
+</body>
+</html>

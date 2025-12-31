@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Age Calculator Online - Accurate Real-Time Age |	You ❤️ PDF</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px; /* Space for fixed header */
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
+    height: 70px; display: flex; align-items: center;
+}
+
+nav {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; align-items: center; gap: 15px; }
+
+/* Menu Alignment Fix */
+.nav-link, .dropbtn {
+    background: none; border: none; font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text-muted); 
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; height: 40px; padding: 0 5px;
+}
+
+.dropdown { position: relative; }
+
+/* The Safe Bridge */
+.dropdown::after {
+    content: ""; position: absolute; bottom: -15px; left: 0; width: 100%; height: 20px;
+}
+
+.dropdown-content {
+    display: none; position: absolute; background-color: var(--white);
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1; border-radius: 10px; border: 1px solid #e2e8f0;
+    top: 100%; left: 0; padding: 8px 0;
+}
+
+.dropdown-content a {
+    color: var(--text-main); padding: 10px 15px; text-decoration: none;
+    display: block; font-size: 0.85rem;
+}
+
+.dropdown-content a:hover { background: #f1f5f9; color: var(--primary); }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Age Calculator UI --- */
+.container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; }
+
+.info-box { text-align: center; margin-bottom: 32px; }
+.info-box h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;}
+
+.input-card {
+    background: white; padding: 30px; border-radius: 24px;
+    border: 1px solid #e2e8f0; text-align: center; margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+input[type="date"] {
+    width: 100%; max-width: 300px; padding: 12px; border: 2px solid #e2e8f0;
+    border-radius: 12px; font-size: 16px; color: var(--text-main); outline: none;
+    transition: 0.3s;
+}
+
+input[type="date"]:focus { border-color: var(--primary); }
+
+.result-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;
+}
+
+.result-box {
+    background: white; border-radius: 16px; padding: 20px; text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.result-box span { display: block; font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.result-box strong { font-size: 2rem; color: var(--primary); }
+
+.live-box {
+    margin-top: 24px; background: #f1f5f9; border-radius: 18px; padding: 25px;
+    text-align: center; border: 1px dashed var(--primary);
+}
+
+.live-time { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px;}
+
+.time-box {
+    background: white; border-radius: 12px; padding: 10px 20px;
+    border: 1px solid #e2e8f0; min-width: 100px;
+}
+
+.time-box strong { display: block; font-size: 1.5rem; color: var(--text-main); }
+.time-box span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+
+/* --- SEO Sections --- */
+.content-section {
+    background: white; padding: 35px; border-radius: 20px;
+    margin-top: 40px; border: 1px solid #e2e8f0;
+}
+
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+	footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .tools-grid { grid-template-columns: 1fr 1fr; }
+        }
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <div class="info-box">
+        <h1>Online Age Calculator</h1>
+        <p>Find your exact age in years, months, days, and even live seconds.</p>
+    </div>
+
+    <div class="input-card">
+        <label style="display:block; font-weight:600; color:var(--text-main); margin-bottom:15px;">
+            Select Your Date of Birth
+        </label>
+        <input type="date" id="dob" />
+    </div>
+
+    <div class="result-grid" id="ageResult" style="display:none;">
+        <div class="result-box">
+            <span>Years</span>
+            <strong id="years">0</strong>
+        </div>
+        <div class="result-box">
+            <span>Months</span>
+            <strong id="months">0</strong>
+        </div>
+        <div class="result-box">
+            <span>Days</span>
+            <strong id="days">0</strong>
+        </div>
+    </div>
+
+    <div class="live-box" id="liveBox" style="display:none;">
+        <h3 style="font-size: 1.1rem; color: var(--primary);">Real-Time Age Ticker</h3>
+        <div class="live-time">
+            <div class="time-box">
+                <strong id="hours">0</strong>
+                <span>Hours</span>
+            </div>
+            <div class="time-box">
+                <strong id="minutes">0</strong>
+                <span>Minutes</span>
+            </div>
+            <div class="time-box">
+                <strong id="seconds">0</strong>
+                <span>Seconds</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <h2>How to Use the Age Calculator</h2>
+        <p>Our <strong>chronological age calculator</strong> provides a highly accurate breakdown of your age. Whether you are curious about how many days you have been alive or need to know your exact age for a legal application, our tool does the math for you instantly.</p>
+        
+        <p>Simply select your <strong>date of birth</strong> from the calendar above. The tool will immediately calculate your age in years, months, and days. Additionally, our unique <strong>Live Age Ticker</strong> shows your age progressing in hours, minutes, and seconds in real-time.</p>
+
+        <h3>Why use You ❤️ PDF Age Calculator?</h3>
+        <ul>
+            <li><strong>Accuracy:</strong> We account for leap years and different month lengths.</li>
+            <li><strong>Privacy:</strong> Your birth date is processed locally in your browser and never saved on our servers.</li>
+            <li><strong>Comprehensive:</strong> Get a full breakdown including a running clock of your life stages.</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Frequently Asked Questions</h2>
+        <div style="margin-bottom:15px;">
+            <h3 style="font-size:1rem; color:var(--text-main);">Can I calculate the age for someone born in a leap year?</h3>
+            <p style="color:var(--text-muted);">Yes, our algorithm correctly identifies leap years to ensure the day count is 100% accurate.</p>
+        </div>
+        <div>
+            <h3 style="font-size:1rem; color:var(--text-main);">Is this tool free to use?</h3>
+            <p style="color:var(--text-muted);">Absolutely. You ❤️ PDF provides all utility calculators for free without any subscription or signup required.</p>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Built for precision and privacy.</p>
+</footer>
+
+<script>
+const dobInput = document.getElementById("dob");
+const yearsEl = document.getElementById("years");
+const monthsEl = document.getElementById("months");
+const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minutesEl = document.getElementById("minutes");
+const secondsEl = document.getElementById("seconds");
+const ageResult = document.getElementById("ageResult");
+const liveBox = document.getElementById("liveBox");
+
+let interval = null;
+
+dobInput.addEventListener("change", () => {
+    if (interval) clearInterval(interval);
+    calculateAge();
+    interval = setInterval(calculateAge, 1000);
+});
+
+function calculateAge() {
+    const dob = new Date(dobInput.value);
+    if (isNaN(dob)) return;
+
+    const now = new Date();
+    let years = now.getFullYear() - dob.getFullYear();
+    let months = now.getMonth() - dob.getMonth();
+    let days = now.getDate() - dob.getDate();
+
+    if (days < 0) {
+        months--;
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+        days += prevMonth;
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    yearsEl.textContent = years;
+    monthsEl.textContent = months;
+    daysEl.textContent = days;
+
+    const diffMs = now - dob;
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const seconds = totalSeconds % 60;
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const minutes = totalMinutes % 60;
+    const totalHours = Math.floor(totalMinutes / 60);
+    const hours = totalHours % 24;
+
+    hoursEl.textContent = hours;
+    minutesEl.textContent = minutes;
+    secondsEl.textContent = seconds;
+
+    ageResult.style.display = "grid";
+    liveBox.style.display = "block";
+}
+</script>
+
+</body>
+</html>

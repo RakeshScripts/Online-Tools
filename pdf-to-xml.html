@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to XML Converter | You ❤️ PDF</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --accent-gold: #eab308;
+            --slate-dark: #2b2d42;
+            --code-bg: #1e1e2f;
+        }
+
+        /* --- Global & Layout --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: 90px;
+        }
+
+        /* --- Updated Navigation Header --- */
+        header {
+            background: var(--white); border-bottom: 1px solid #e2e8f0;
+            position: fixed; top: 0; width: 100%; z-index: 2000;
+            height: 70px; display: flex; align-items: center;
+        }
+
+        nav {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 20px; }
+        
+        .dropdown { position: relative; }
+        .dropbtn { 
+            background: none; border: none; cursor: pointer; 
+            font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px;
+        }
+
+        .dropdown-content {
+            display: none; position: absolute; background-color: var(--white);
+            min-width: 220px; box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+            z-index: 1; border-radius: 12px; border: 1px solid #e2e8f0;
+            top: 100%; left: 0; padding: 10px 0; margin-top: 10px;
+        }
+
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            color: var(--text-main); padding: 10px 20px;
+            text-decoration: none; display: block; font-size: 0.85rem; font-weight: 500;
+            transition: 0.2s;
+        }
+        .dropdown-content a:hover { background-color: #f1f5f9; color: var(--primary); }
+
+        /* --- Main UI --- */
+        .container { max-width: 1000px; width: 100%; margin: 0 auto; padding: 0 20px 60px; }
+
+        .tool-header {
+            background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.2);
+            padding: 30px; border-radius: 2rem; display: flex; align-items: center; gap: 25px; margin-bottom: 30px;
+        }
+        .tool-icon {
+            width: 70px; height: 70px; background: var(--slate-dark);
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tool-header h2 { color: var(--accent-gold); font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -1px; }
+
+        .upload-card {
+            background: var(--white); border: 2px dashed #cbd5e1;
+            padding: 40px; text-align: center; border-radius: 2.5rem;
+            cursor: pointer; transition: 0.3s; margin-bottom: 30px;
+        }
+        .upload-card:hover { border-color: var(--primary); background: #f1f5f9; }
+
+        .action-area {
+            background: var(--slate-dark); border-radius: 2.5rem; padding: 40px;
+            color: white; border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        .action-btn {
+            width: 100%; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 14px;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            border: none; background: var(--accent-gold); color: var(--slate-dark);
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(234,179,8,0.3); }
+
+        textarea {
+            width: 100%; height: 400px; margin-top: 25px;
+            background: var(--code-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; color: #a5f3fc; padding: 25px;
+            font-family: 'Fira Code', monospace; font-size: 0.85rem;
+            line-height: 1.6; resize: vertical;
+        }
+
+        /* --- Info & QNA --- */
+        .info-section { margin-top: 60px; background: white; padding: 50px; border-radius: 2.5rem; border: 1px solid #e2e8f0; }
+        .info-section h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: var(--slate-dark); }
+        .info-section p { margin-bottom: 20px; color: var(--text-muted); }
+        
+        .qna-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .qna-item h4 { color: var(--primary); font-weight: 800; margin-bottom: 10px; font-size: 1rem; }
+        .qna-item p { font-size: 0.9rem; line-height: 1.5; }
+
+        .keyword-pill { 
+            display: inline-block; background: #f1f5f9; padding: 5px 12px; 
+            border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--primary); 
+            margin: 0 5px 10px 0; text-transform: uppercase;
+        }
+
+        footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header><div class="container">
+    <div class="tool-header">
+        <div class="tool-icon">💠</div>
+        <div>
+            <h2>PDF to XML</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">Transform documents into machine-readable data structures.</p>
+        </div>
+    </div>
+
+    <div class="upload-card" onclick="document.getElementById('file').click()">
+        <div style="font-size: 3rem; margin-bottom: 10px;">📤</div>
+        <h3 id="fileName" style="font-weight: 800;">Upload PDF Document</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Convert text to XML tags locally.</p>
+        <input type="file" accept=".pdf" id="file" style="display:none" onchange="document.getElementById('fileName').innerText = this.files[0].name">
+    </div>
+
+    <div class="action-area">
+        <button class="action-btn" onclick="convert()">⚡ Generate XML Content</button>
+        <textarea id="output" placeholder="<document>
+  </document>" spellcheck="false"></textarea>
+    </div>
+
+    
+
+    <div class="info-section">
+        <h3>Information & Expert Q&A</h3>
+        <p>The **PDF to XML Converter** is an essential tool for data scraping and document archiving. XML (eXtensible Markup Language) allows you to define tags that make the data within a PDF searchable and easy to import into databases or enterprise resource planning (ERP) systems.</p>
+        
+        <div class="qna-grid">
+            <div class="qna-item">
+                <h4>What makes XML useful for PDFs?</h4>
+                <p>XML provides a standardized way to label document components. By converting PDF text into XML, you make it possible for other software to read and process the document content without human intervention.</p>
+            </div>
+            <div class="qna-item">
+                <h4>Is the conversion private?</h4>
+                <p>Yes. You ❤️ PDF uses your browser's local processing power. Your PDF file is never uploaded to our servers, keeping your sensitive data private.</p>
+            </div>
+            <div class="qna-item">
+                <h4>Can I use this for bulk data?</h4>
+                <p>Yes, once converted, you can copy the XML output and use it in data pipelines, web services, or Excel imports for structured data analysis.</p>
+            </div>
+            <div class="qna-item">
+                <h4>Are special characters handled?</h4>
+                <p>Our tool automatically escapes characters like <code>&</code>, <code><</code>, and <code>></code> into their XML-safe equivalents (like <code>&amp;amp;</code>) to ensure the output is well-formed.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <span class="keyword-pill">XML Extraction</span>
+            <span class="keyword-pill">Data Parsing</span>
+            <span class="keyword-pill">Structured Markup</span>
+            <span class="keyword-pill">PDF Metadata</span>
+            <span class="keyword-pill">No-Upload Security</span>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 You ❤️ PDF. Professional Data Extraction Suite.
+</footer>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    async function convert(){
+        const fileInput = document.getElementById("file");
+        const btn = document.querySelector(".action-btn");
+        const output = document.getElementById("output");
+        
+        if(!fileInput.files[0]) return alert("Please select a PDF file first.");
+
+        btn.innerText = "Parsing XML...";
+        btn.disabled = true;
+
+        try {
+            const file = fileInput.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<pdf_document>\n`;
+            xml += `  <metadata>\n    <filename>${file.name}</filename>\n    <pages>${pdf.numPages}</pages>\n  </metadata>\n  <content>\n`;
+
+            for(let i = 1; i <= pdf.numPages; i++){
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                const text = content.items.map(it => it.str).join(" ")
+                    .replace(/&/g,"&amp;")
+                    .replace(/</g,"&lt;")
+                    .replace(/>/g,"&gt;")
+                    .replace(/"/g,"&quot;")
+                    .replace(/'/g,"&apos;");
+
+                xml += `    <page index="${i}">\n`;
+                xml += `      <text>${text.trim()}</text>\n`;
+                xml += `    </page>\n`;
+            }
+
+            xml += `  </content>\n</pdf_document>`;
+            output.value = xml;
+        } catch (error) {
+            console.error(error);
+            alert("Error processing PDF. The file might be corrupted or protected.");
+        } finally {
+            btn.innerText = "⚡ Generate XML Content";
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

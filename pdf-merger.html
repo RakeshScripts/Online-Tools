@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merge PDF Online - Combine PDF Files for Free | You ❤️ PDF</title>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+/* --- Global & Layout --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px; /* Space for fixed header */
+}
+
+/* Background Gradient Effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 0% 0%, #e0e7ff 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, #f1f5f9 0%, transparent 50%);
+    z-index: -1;
+}
+
+/* --- Navigation Header --- */
+header {
+    background: var(--white);
+    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2000;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Dropdown Logic */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 0;
+            font-family: inherit;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            right: 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text-main);
+            padding: 12px 16px;
+            display: block;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown:hover .dropbtn { color: var(--primary); }
+
+/* --- Tool UI --- */
+.container {
+    max-width: 800px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.info-box { text-align: center; margin-bottom: 32px; }
+.info-box h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.info-box p { color: var(--text-muted); font-size: 1.1rem; }
+
+.upload-box {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    border: 2px dashed #cbd5e1;
+    text-align: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.upload-box:hover { border-color: var(--primary); background: #fdfdff; }
+.upload-box .icon { font-size: 40px; margin-bottom: 10px; display: block; }
+
+.file-list {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.merge-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+}
+
+/* --- SEO & Content Sections --- */
+.content-section {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    margin-top: 40px;
+    border: 1px solid #e2e8f0;
+}
+.content-section h2 { margin-bottom: 15px; color: var(--text-main); }
+.content-section p, .content-section li { color: var(--text-muted); margin-bottom: 10px; }
+
+.faq-container { margin-top: 20px; }
+.faq-item { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; }
+.faq-item h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text-main); }
+
+	
+.keyword-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .tag { background: #f1f5f9; color: var(--text-muted); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid #e2e8f0; }
+		
+footer {
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    nav ul { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="index.html" class="logo">You ❤️ PDF</a>
+        <ul>
+            <li><a href="https://ilovepdf2.com/pdf-to-word-converter/" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF to Word</a></li>
+            <li><a href="pdf-merger.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Merger</a></li>
+            <li><a href="pdf-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">PDF Compressor</a></li>
+            <li><a href="image-compressor.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Image Compressor</a></li>
+            
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;"> Tools ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://ilovepdf2.com/pdf-to-word-converter/">PDF to Word</a>
+                    <a href="pdf-merger.html">PDF Merger</a>
+                    <a href="pdf-compressor.html">PDF Compressor</a>
+                    <a href="pdf-split.html">PDF Split</a>
+                    <a href="pdf-to-jpg.html">PDF to JPG</a>
+					<a href="image-to-svg.html">PDF to base64</a>
+                    <a href="pdf-to-png.html">PDF to PNG</a>
+                    <a href="pdf-to-xml.html">PDF to xml</a>
+                    <a href="pdf-to-yaml.html">PDF to yaml</a>
+                    <a href="pdf-to-base64.html">PDF to base64</a>
+                    
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Utility ▼</button>
+                <div class="dropdown-content">
+                    <a href="word-counter.html">Word Counter</a>
+                    <a href="unit-converter.html">Unit Convertor</a>
+                    <a href="qr-generator.html">QR Generator</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <button class="dropbtn" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Calculators ▼</button>
+                <div class="dropdown-content">
+                    <a href="bmi-calculator.html">Body Mass Index Calculator</a>
+                    <a href="age-calculator.html">Real-time Age Calculator</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header><div class="container">
+  <div class="info-box">
+    <h1>Merge PDF Files Online</h1>
+    <p>The safest way to combine multiple PDF documents into one. No uploads, no waiting.</p>
+  </div>
+
+  <div class="upload-box" onclick="fileInput.click()">
+    <span class="icon">📂</span>
+    <span><strong>Select PDF Files to Merge</strong></span>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:5px;">Drag & Drop or Click to browse (Privacy Guaranteed)</p>
+  </div>
+
+  <input type="file" id="fileInput" accept=".pdf" multiple hidden />
+
+  <div class="file-list" id="fileList"></div>
+
+  <button class="merge-btn" id="mergeBtn" disabled>🔗 Combine All Files</button>
+  <div class="status" id="status"></div>
+
+  <section class="content-section">
+    <h2>How to Combine PDF Files Online for Free</h2>
+    <p>Merging PDF documents shouldn't be complicated or risky. Our <strong>online PDF merger</strong> allows you to join multiple files into a single document without the need to install expensive software like Adobe Acrobat.</p>
+    
+    <p>Unlike other services, You ❤️ PDF processes your files <strong>locally in your browser</strong>. This means your private documents are never sent to our servers. It’s faster, more secure, and works on any device including Windows, Mac, and mobile phones.</p>
+
+    <h3>Why Use Our PDF Merger?</h3>
+    <ul>
+        <li><strong>Privacy First:</strong> Your files never leave your computer. 100% Client-side processing.</li>
+        <li><strong>Easy Reordering:</strong> Drag and drop the files in the list to change the order of the final document.</li>
+        <li><strong>High Fidelity:</strong> We preserve the original quality of text, images, and formatting.</li>
+        <li><strong>No Limits:</strong> Merge as many files as you want without registration or watermarks.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-container">
+        <div class="faq-item">
+            <h3>Is it safe to merge my PDFs here?</h3>
+            <p>Yes. This tool uses the <strong>pdf-lib</strong> library to merge files directly in your browser's memory. No data is uploaded to a server, ensuring your sensitive information stays with you.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Can I reorder files after selecting them?</h3>
+            <p>Absolutely! After you select your files, they will appear in a list. You can drag and drop them to arrange them in the exact order you want them to appear in the merged file.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Is there a file size limit?</h3>
+            <p>While we don't set a hard limit, merging very large files (over 200MB total) depends on your device's available RAM. For most documents, it is lightning fast.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Do I need to pay for this service?</h3>
+            <p>No. Our PDF Merger is part of our "Free Forever" toolkit. We don't charge fees, require accounts, or add watermarks to your documents.</p>
+        </div>
+			
+			<div class="keyword-box">
+                <span class="tag">Reduce PDF Size</span>
+                <span class="tag">Compress PDF Online</span>
+                <span class="tag">PDF Optimizer</span>
+                <span class="tag">Shrink PDF</span>
+                <span class="tag">Client-Side Compression</span>
+                <span class="tag">DPI Downsampling</span>
+                <span class="tag">No-Upload PDF Tool</span>
+                <span class="tag">PDF.js</span>
+                <span class="tag">Metadata Removal</span>
+                <span class="tag">Fast PDF Shrinker</span>
+            </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+    <p>&copy; 2025 You ❤️ PDF. Secure local-first processing for your privacy.</p>
+</footer>
+
+<script>
+/* JAVASCRIPT LOGIC (Unchanged - handling the merging and reordering) */
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const statusText = document.getElementById("status");
+
+let files = [];
+let dragIndex = null;
+
+fileInput.addEventListener("change", e => {
+  files.push(...Array.from(e.target.files));
+  renderFiles();
+});
+
+function renderFiles() {
+  fileList.innerHTML = "";
+  files.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = "file-item";
+    item.draggable = true;
+    item.dataset.index = index;
+
+    item.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="color:#94a3b8; cursor:grab;">☰</span>
+        <div>
+          <div style="font-size:14px; font-weight:600;">${file.name}</div>
+          <div style="font-size:12px; color:var(--text-muted);">${(file.size / 1024).toFixed(1)} KB</div>
+        </div>
+      </div>
+      <button style="background:#fee2e2; border:none; color:#ef4444; width:28px; height:28px; border-radius:50%; cursor:pointer;" onclick="removeFile(${index})">✕</button>
+    `;
+
+    item.addEventListener("dragstart", () => { dragIndex = index; });
+    item.addEventListener("dragover", e => e.preventDefault());
+    item.addEventListener("drop", () => {
+      if (dragIndex === null || dragIndex === index) return;
+      const moved = files.splice(dragIndex, 1)[0];
+      files.splice(index, 0, moved);
+      renderFiles();
+    });
+
+    fileList.appendChild(item);
+  });
+  mergeBtn.disabled = files.length < 2;
+}
+
+function removeFile(index) {
+  files.splice(index, 1);
+  renderFiles();
+}
+
+mergeBtn.addEventListener("click", async () => {
+  try {
+    mergeBtn.disabled = true;
+    statusText.textContent = "Combining your PDFs...";
+    statusText.className = "status";
+
+    const mergedPdf = await PDFLib.PDFDocument.create();
+
+    for (const file of files) {
+      const buffer = await file.arrayBuffer();
+      const pdf = await PDFLib.PDFDocument.load(buffer);
+      const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      pages.forEach(p => mergedPdf.addPage(p));
+    }
+
+    const bytes = await mergedPdf.save();
+    const blob = new Blob([bytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `merged_document.pdf`;
+    a.click();
+
+    statusText.textContent = "✅ Merge Complete!";
+    statusText.style.color = "#10b981";
+  } catch (err) {
+    statusText.textContent = "❌ Error merging files.";
+    statusText.style.color = "#ef4444";
+  } finally {
+    mergeBtn.disabled = files.length < 2;
+  }
+});
+</script>
+
+</body>
+</html>
